@@ -38,8 +38,11 @@ class Cards:
         self.suit = suit
 
     def get_random(self):
-        rand_card = random.choice(self.cards)
-        self.cards.remove(rand_card)
+        if len(self.cards) != 0:
+            rand_card = random.choice(self.cards)
+            self.cards.remove(rand_card)
+        else:
+            rand_card = [None, None]
         return rand_card
 
     def length(self):
@@ -73,13 +76,15 @@ class Player:
             return []
         return []
 
-    def add_won(self, value, suit):
+    def add_won(self, suit, value):
         self.won.append([suit, value])
 
     def calculate_total(self):
         self.total_points = 0
+        print(self.won)
         for card in self.won:
-            self.total_points += card[1]
+            print(card)
+            self.total_points += int(card[1])
         return self.total_points
 
 
@@ -139,6 +144,7 @@ class Game_91(CardGame):
         self.round = 1
         self.prize_cards = Cards(CLUBS="ALL")
         self.current_prize = self.prize_cards.get_random()
+        self.prize_cards.set_suit("CLUBS")
 
     def add_bid(self, player: Player, bid: int):
         p_bid = player.add_bid(bid)
@@ -156,13 +162,13 @@ class Game_91(CardGame):
             return False
 
     def next_round(self):
-        print(self.round, self.round + 1)
         if self.is_round_complete():
-            if not self.is_complete():
-                self.round += 1
-                for player in self.players:
-                    player.can_bid = True
-                #self.current_prize = self.prize_cards.get_random()
+            print(self.round)
+            self.round += 1
+            print(self.round + 1)
+            for player in self.players:
+                player.can_bid = True
+            #self.current_prize = self.prize_cards.get_random()
 
     def is_complete(self):
         if self.prize_cards.length() == 0:
@@ -205,5 +211,5 @@ class Game_91(CardGame):
             for player in self.players:
                 total = player.calculate_total()
                 if total > winner[1]:
-                    winner[player, total]
+                    winner = [player, total]
         return winner

@@ -121,7 +121,7 @@ def game_handler(update: Update, context: CallbackContext) -> None:
                     f_winner = current_game.final_winner()
                     if f_winner[0]:
                         bot.send_message(
-                            grou_id,
+                            group_id,
                             f"Congratulation {f_winner[0].name}! You won the game with {f_winner[1]} points"
                         )
 
