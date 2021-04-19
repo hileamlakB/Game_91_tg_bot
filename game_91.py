@@ -1,183 +1,241 @@
 #!/usr/bin/env python3.8
-
-import logging
+"""
+Defines game objects
+Mostly the games are card games
+that are ideal for math camps
+"""
 import uuid
-from telegram import Update, ForceReply
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-from telegram.error import Unauthorized
-from game import Game_91, Player
-
-# Enable logging
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO)
-
-logger = logging.getLogger(__name__)
+from cards import Cards
+from player import Player
+from cardgame import CardGame
 
 
-# Define a few recommended command handlers.
-def start(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /start is issued."""
-    pass
+class Game_91(CardGame):
+    """ 
+    A game object for the 91 card game 
+    rules for the game can be found in 
+    the pdf file in this repository.
 
+    Attributes
+    @MAX_PLAYERS - the maximum number of players
+                 that could take part in the game
+    @MIN_PLAYERS - the minimum number of players
+                 that could take part in the game
+    """
 
-def help_command(update: Update, context: CallbackContext) -> None:
-    """Send a message when the command /help is issued."""
-    bot = context.bot
-    bot.send_message("@Ehm21", "talk to @Ehm21")
+    MAX_PLAYERS = 3
+    MIN_PLAYERS = 2
 
+    def __init__(self):
+        """
+        Creates a game 91 object, which can be 
+        used to store and manipulate different
+        datas about players and score in different
+        stages of the game. It works well with a game
+        engine.
 
-def game_handler(update: Update, context: CallbackContext) -> None:
-    """Accorind to the message handels different game commands."""
-    msg = update.message.text.split(" ")
-    chat_id = update.message.chat_id
-    bot = context.bot
+        Attributes
+        @id - a unique identifier of the game object
+              to allow initiation of multiple game objects
+        @players - the list of player taking part in this game
+        @game_stat - ?
+        @is_started - the status of the game
+        @round - a number showing the current round
+        @prize_cards - a list of cards that are to be presented
+                     as a prize
+        @current_prize - a new prize withdrawen from the prize_cards
+                      after every round. in case of tie there could
+                      be more than one in the round next to the tie
+                      other wise it is similar to the current prize
+        @bids - is the list of bids made and also the details  about
+              the bid including the bidder in a key-value pair
+        """
+        self.id = str(uuid.uuid4())
+        self.players = []
+        self.game_stat = False
+        self.is_started = False
+        self.round = None
+        self.prize_cards = None
+        self.current_prize = None
+        self.bids = {}
 
-    if msg[0] == "MC!create" and not context.chat_data:
-        game = Game_91()
-        game.chat_id = str(chat_id)
-        #use game id here 1 is for ease for now
-        context.chat_data["1"] = game
-        context.bot_data[chat_id] = game
-        bot.send_message(chat_id=chat_id,
-                         text="""
-                             *********** Game 1 Created **************
-                             Lets now add players. We need 3. each player should type !player <game_id_they_want_to_join>
+    def add_player(self, player: Player):
+        """
+        Addes a new player to
+        the current game if it isn't full
+       
+        Returns True on success and False on failer
+        """
 
-                                """)
-    elif msg[0] == "MC!player" and int(
-            msg[1]) == 1:  #check if the game id is a proper one
-        current_game = context.chat_data["1"]
-        user = update.effective_user
-        player = Player(update.effective_user.first_name, current_game,
-                        "SPADE")
-        player.user = update.effective_user
+        if len(self.players) < Game_91.MAX_PLAYERS:
+            self.players.append(player)
+            return True
+        return False
 
-        if current_game.add_player(player) == 1:
-            context.bot_data[user.id] = player
-            if current_game.is_ready():
-                bot.send_message(
-                    chat_id=chat_id,
-                    text=
-                    """ The game is now ready to be played, it has enough player!! You can go and play if you play type MC!start"""
-                )
-    elif msg[0] == "MC!start" and int(msg[1]) == 1:
+    def show_status(self):
+        """ 
+        Returns a string containing
+        the status of each player and
+        the whole game separated by a
+        new line
+        """
 
-        current_game = context.chat_data["1"]
-        is_init = True
+        stat = ""
+        for player in self.players:
+            stat += str(player) + "\n"
+        stat += self.game_stat
 
-        if current_game.is_started:
-            bot.send_message(chat_id,
-                             "The game is already started. Keep playing")
+    def get_players(self):
+        """Getter for the list of players"""
+        return self.players
 
-        elif current_game.is_ready():
-            for player in current_game.get_players():
-                try:
-                    player_user_id = player.user['id']
-                    bot.send_message(
-                        chat_id=player_user_id,
-                        text=f"""Make your round {current_game.round} bids""")
-                except Unauthorized:
-                    is_init = False
-                    bot.send_message(
-                        chat_id,
-                        f"For the bot to be able to recieve your bid you have to initalize a conversation with you. You can do that by going to @my_bot and pressing start. Player {player.user['first_name']} hasn't initalized the bot"
-                    )
-            if is_init:
-                current_game.start()
-                bot.send_message(
-                    chat_id,
-                    "The game is now started no more players cant be added! you can know play. type /ins to see instructions"
-                )
-                bot.send_message(
-                    chat_id,
-                    "Round one has begun!! Players make you bid in private messages. For the bot to be able to get your messages and start collecting your bids got to @my_bot and press start"
-                )
-                bot.send_message(
-                    chat_id,
-                    f"You are now bidding for the {current_game.current_prize[1]} of {current_game.current_prize[0]}"
-                )
-                for player in current_game.get_players():
-                    player_user_id = player.user['id']
-                    bot.send_message(
-                        chat_id=player_user_id,
-                        text=f"""Make your round {current_game.round} bids""")
-    elif msg[0] == "MC!bid" and update.message.chat.type == "private":
-        user = update.effective_user
-        if context.bot_data[user.id]:
-            player = context.bot_data[user.id]
-            current_game = player.game
-            current_game.add_bid(player, int(msg[1]))
-            group_id = current_game.chat_id
-            if current_game.is_round_complete():
-                if current_game.is_complete():
-                    bot.send_message(group_id, f"{current_game.get_bids()}")
-                    print(current_game.is_complete(),
-                          current_game.is_round_complete(), current_game.round)
-                    winner = current_game.handle_winner()
-                    if winner[0] != None:
-                        bot.send_message(group_id,
-                                         f"{winner[0].name} won this round")
-                    f_winner = current_game.final_winner()
-                    if f_winner[0]:
-                        bot.send_message(
-                            group_id,
-                            f"Congratulation {f_winner[0].name}! You won the game with {f_winner[1]} points"
-                        )
+    def is_ready(self):
+        """
+        Checks if the game is ready to be started
+        according to the rules
+        
+        Returns True if it is and False if not
+        """
 
-                else:
-                    bot.send_message(group_id, f"{current_game.get_bids()}")
-                    winner = current_game.handle_winner()
-                    if winner[0] != None:
-                        bot.send_message(group_id,
-                                         f"{winner[0].name} won this round")
-                        current_game.next_round()
-                        bot.send_message(
-                            group_id,
-                            f"You are now bidding for the {current_game.current_prize[1]} of {current_game.current_prize[0]}"
-                        )
-                        for player in current_game.get_players():
-                            player_user_id = player.user['id']
-                            bot.send_message(
-                                chat_id=player_user_id,
-                                text=
-                                f"""Make your round {current_game.round} bids"""
-                            )
+        if len(self.players) in range(Game_91.MIN_PLAYERS,
+                                      Game_91.MAX_PLAYERS):
+            return True
+        return False
 
+    def start(self):
+        """
+        Changes the status of the game as started,
+        Sets the round, the prize_cards and other variables
+        
+        If the game is already started it does nothing.
+        Returns  None in both cases
+        """
+        if not self.is_started:
+            self.is_started = True
+            self.round = 1
+            self.prize_cards = Cards(CLUBS="ALL")
+            self.current_prize = self.prize_cards.get_random()
+            self.prize_cards.set_suit("CLUBS")
+
+    def add_bid(self, player: Player, bid: int):
+        """
+        Records bid made in the bids dictionary.
+        The round will be the key and the value will
+        be a dictionary having the player as a key and the
+        bid amount as a value. It first checks if the player
+        hasn't already bided by first adding the bid to the 
+        player object.
+
+        Returns the result of adding the bid to the player object
+        """
+
+        p_bid = player.add_bid(bid)
+        if p_bid:
+            if f"{self.round}" in self.bids:
+                self.bids[f"{self.round}"].append({player: bid})
+            else:
+                self.bids[f"{self.round}"] = [{player: bid}]
+        return p_bid
+
+    def is_round_complete(self):
+        """ 
+        Checks if the current round is complete
+        by counting the number of bids made
+
+        Returns True if it is and False if it isn't
+        """
+        if len(self.bids[f"{self.round}"]) == len(self.players):
+            return True
         else:
-            bot.send_message(
-                user['id'],
-                "You aren't playing any game! Go to a group and create one")
+            return False
 
+    def next_round(self):
+        """
+        Moves the game into the next round if the 
+        current round is complete. And give back all
+        the players their ability to bid again.
 
-def main() -> None:
-    """Game logic"""
-    players = []
-    """Start the bot."""
-    # Create the Updater and pass it your bot's token.
-    updater = Updater("1762593952:AAE2tYivmziMiu8jn0aJrDW1ENbQY_JM9qs",
-                      use_context=True)
+        Returns True if the bid was successful and
+        False if it isn't.
+        """
 
-    # Get the dispatcher to register handlers
-    dispatcher = updater.dispatcher
+        if self.is_round_complete():
+            self.round += 1
+            for player in self.players:
+                player.can_bid = True
+            #self.current_prize = self.prize_cards.get_random()
+            return True
+        return False
 
-    # on different commands - answer in Telegram
-    dispatcher.add_handler(CommandHandler("start", start))
-    dispatcher.add_handler(CommandHandler("help", help_command))
+    def is_complete(self):
+        """
+        Checks if the game is complete by checking
+        the number of  prize cards left.
+        """
 
-    print(Filters.text, type(Filters.text))
-    # on non command i.e message - echo the message on Telegram
-    dispatcher.add_handler(
-        MessageHandler(Filters.text & ~Filters.command, game_handler))
+        if self.prize_cards.ncards() == 0:
+            return True
+        return False
 
-    # Start the Bot
-    updater.start_polling()
+    def get_bids(self):
+        """
+        Returns the bids made in the current round
 
-    # Run the bot until you press Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
+        The format of the returned string is as follows
+        "
+          {player1_name} bid {bid_value}
+          {player2_name} bid {bid_value}
+        "
+        """
+        bid_str = ""
+        for bid in self.bids[f"{self.round}"]:
+            for player, value in bid.items():
+                bid_str += f"{player.name} bid {value}\n"
+        return bid_str
 
+    def handle_winner(self):
+        """
+        Handles winners in a round. Only if the round is complete.
+        Better to check if the current round is complete before
+        calling this function as the retunrned value may create 
+        confusion for the caller.
+        """
+ 
+        # format [Bidder, bid]
+        max_bid = [None, 0]
 
-if __name__ == '__main__':
-    main()
+        if not self.is_round_complete():
+            return max_bid
+
+        # choose the maximum bid of this round
+        for bid in self.bids[f"{self.round}"]:
+            for player, value in bid.items():
+                if value > max_bid[1]:
+                    max_bid = [player, value]
+
+        # check if there is tie by counting the number of
+        # maximum bids
+        all_bids = []
+        for bid in self.bids[f"{self.round}"]:
+            all_bids += [value for _, value in bid.items()]
+        if all_bids.count(max_bid[1]) != 1:  #check if there is a repeated maximum
+            max_bid = [None, 0]
+
+        if max_bid[0]:
+            max_bid[0].add_won(self.prize_cards.suit, max_bid[1])
+            if self.prize_cards.length != 0:
+                self.current_prize = self.prize_cards.get_random()
+
+        return max_bid
+
+    def final_winner(self):
+        """
+            Returns the winner by comparing every players won cards
+        """
+        winner = [None, 0]
+        if self.is_complete():
+            for player in self.players:
+                total = player.calculate_total()
+                if total > winner[1]:
+                    winner = [player, total]
+        return winner

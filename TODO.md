@@ -1,0 +1,11 @@
+- [x] Version 0.1 => Proof of concept
+- [  ] Version 0.2 => Documentations and Proper organization
+- [  ] Version 0.3 => Correct Text information, simpler commands, and ux
+- [  ] Version 0.4 => Correct Prize output
+- [  ] Version 0.5 => Image addition and ui improvement
+- [  ] Version 0.6 => Write tests
+		            Test scalability for multiple players
+- [  ] Version 0.7 => Multi player mode both in  different groups and in single groups
+- [  ] Version 0.8 => Error checking, edge case handling, more test
+- [  ] Version 0.9
+- [  ] Version 1.0 => First realease
