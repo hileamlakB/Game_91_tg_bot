@@ -7,5 +7,6 @@
 		            Test scalability for multiple players
 - [  ] Version 0.7 => Multi player mode both in  different groups and in single groups
 - [  ] Version 0.8 => Error checking, edge case handling, more test
-- [  ] Version 0.9
+- [  ] Version 0.9 => group score board for compotation
+
 - [  ] Version 1.0 => First realease
