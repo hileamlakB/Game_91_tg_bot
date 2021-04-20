@@ -19,8 +19,6 @@ class G91Tg_eingine:
     to run the game on a telegram bot
     """
 
-
-
     def __init__(self) -> None:
         """
         Creates an instance of a telegram game91
@@ -35,6 +33,7 @@ class G91Tg_eingine:
         "!STR" : [["group"], self.start_game],
         "!BID" : [["private"], self.bid_card],
         "!INS" : [["group","private"], self.show_ins],
+        "!CMD" : [["group","private"], self.show_ins],
         }
 
     def create_game(self, update: Update, context: CallbackContext) -> None:
@@ -73,7 +72,7 @@ class G91Tg_eingine:
 
         if len(cmd) < 2:
             bot.send_message(chat_id, noid_msg)
-            return 
+            return
 
         game_id = cmd[1]
         # check if the game id is n the group data
@@ -94,7 +93,7 @@ class G91Tg_eingine:
             if not current_game.add_player(player):
                 bot.send_message(chat_id, maxp_msg)
                 return
-           
+
             context.bot_data[user.id] = player
             if current_game.is_ready():
                 bot.send_message(chat_id, ready_msg)
@@ -211,12 +210,30 @@ class G91Tg_eingine:
         pass
 
     def show_ins(self, update: Update, context: CallbackContext) -> None:
-        """ Prints instruction to the one requesting it """
-        return
+        """
+        Prints instruction to the one requesting it
+        """
+
+        bot = context.bot
+        chat_id = update.message.chat_id
+
+        bot.send_message(chat_id, ins_msg)
+
+    def show_cmd(self, update: Update, context: CallbackContext) -> None:
+        """
+        Prints instruction to the one requesting it
+        """
+
+        bot = context.bot
+        chat_id = update.message.chat_id
+
+        bot.send_message(chat_id, cmd_msg)
+
 
     def engine(self,  update: Update, context: CallbackContext) -> None:
-        """This is the function that should ideally be used to call
-        any engine functions. It will call the respective function according
+        """
+        This is the function that should ideally be used to call
+        engine functions. It will call the respective function according
         to the command"""
 
         cmd = update.message.text.split(" ")[0]
