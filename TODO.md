@@ -1,11 +1,13 @@
 - [x] Version 0.1 => Proof of concept
-- [  ] Version 0.2 => Documentations and Proper organization
-- [  ] Version 0.3 => Correct Text information, simpler commands, and ux
-- [  ] Version 0.4 => Correct Prize output (Handling ties)
-- [  ] Version 0.5 => Image addition and ui improvement
-- [  ] Version 0.6 => Write tests
+- [x] Version 0.2 => Documentations and Proper organization
+- [x] Version 0.3 => Correct Text information, simpler commands, and ux
+- [.] Version 0.4 => Correct Prize output (Handle Tie's)
+- [.] Version 0.5 => Image addition and UI improvement
+- [.] Version 0.6 => Write tests
 		            Test scalability for multiple players
-- [  ] Version 0.7 => Multi player mode both in  different groups and in single groups
-- [  ] Version 0.8 => Error checking, edge case handling, more test
-- [  ] Version 0.9
-- [  ] Version 1.0 => First realease
+- [.] version 0.7 => give different suits for different players
+- [.] Version 0.8 => Multi player mode both in  different groups and in single groups
+- [.] Version 0.9 => Error checking, edge case handling, more test
+- [.] Version 1.0 => group score board for compotation
+- [.] Version 1.0 => First realease
+- [.] version 1.1 => Add keyboard layout as a secondary option
