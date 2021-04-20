@@ -1,6 +1,6 @@
 - [x] Version 0.1 => Proof of concept
 - [x] Version 0.2 => Documentations and Proper organization
-- [.] Version 0.3 => Correct Text information, simpler commands, and ux
+- [x] Version 0.3 => Correct Text information, simpler commands, and ux
 - [.] Version 0.4 => Correct Prize output (Handle Tie's)
 - [.] Version 0.5 => Image addition and UI improvement
 - [.] Version 0.6 => Write tests
