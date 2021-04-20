@@ -12,3 +12,4 @@
 - [.] Version 1.0 => group score board for compotation
 
 - [.] Version 1.0 => First realease
+- [.] versión 1.1 => Add keyboard layout as a secondary option
