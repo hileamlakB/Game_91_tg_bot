@@ -1,0 +1,5 @@
+Refactor more by putting the messages in another file
+Improve the game engine's start method
+After tests has been created, add integration actiona and linting to your repo
+
+After image addition, reogranize your structure into a nice folder hyrarcy, and packages

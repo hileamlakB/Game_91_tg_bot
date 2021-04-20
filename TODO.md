@@ -1,7 +1,7 @@
 - [x] Version 0.1 => Proof of concept
 - [  ] Version 0.2 => Documentations and Proper organization
 - [  ] Version 0.3 => Correct Text information, simpler commands, and ux
-- [  ] Version 0.4 => Correct Prize output
+- [  ] Version 0.4 => Correct Prize output (Handling ties)
 - [  ] Version 0.5 => Image addition and ui improvement
 - [  ] Version 0.6 => Write tests
 		            Test scalability for multiple players

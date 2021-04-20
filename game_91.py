@@ -65,6 +65,8 @@ class Game_91(CardGame):
         the current game if it isn't full
        
         Returns True on success and False on failer
+        This will only fail if the maximum number of
+        players is reached
         """
 
         if len(self.players) < Game_91.MAX_PLAYERS:
