@@ -116,9 +116,8 @@ class Game_91(CardGame):
         if not self.is_started:
             self.is_started = True
             self.round = 1
-            self.prize_cards = Cards(CLUBS="ALL")
+            self.prize_cards = Cards(CLUB="ALL")
             self.current_prize = self.prize_cards.get_random()
-            print(self.current_prize)
             self.prize_cards.set_suit("CLUBS")
 
     def add_bid(self, player: Player, bid: int):
@@ -227,7 +226,7 @@ class Game_91(CardGame):
 
         if max_bid[0]:
             max_bid[0].add_won(self.prize_cards.suit, max_bid[1])
-            if self.prize_cards.length != 0:
+            if self.prize_cards.ncards() != 0:
                 self.current_prize = self.prize_cards.get_random()
 
         return max_bid

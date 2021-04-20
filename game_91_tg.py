@@ -21,7 +21,7 @@ def main() -> None:
     g_engine = G91Tg_eingine()
 
     # Create the Updater and pass it your bot's token.
-    updater = Updater("1762593952:AAE2tYivmziMiu8jn0aJrDW1ENbQY_JM9qs",
+    updater = Updater("1792874118:AAH31TYxIi2Ct2Tk6UEbJ0RKrOqzW5BTYjQ",
                       use_context=True)
 
     dispatcher = updater.dispatcher

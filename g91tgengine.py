@@ -179,7 +179,7 @@ class G91Tg_eingine:
                             group_id,
                             f"Congratulation {f_winner[0].name}! You won the game with {f_winner[1]} points"
                             )
-                        self.clean_up()
+                        self.clean_up(update, context)
 
                 else:
                     bot.send_message(group_id, f"{current_game.get_bids()}")
