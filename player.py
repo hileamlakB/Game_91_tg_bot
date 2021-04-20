@@ -2,6 +2,8 @@
 """
 Defines a card game player object
 """
+import uuid
+from cards import Cards
 
 
 class Player:
@@ -29,6 +31,7 @@ class Player:
         @total_points - The total point won calculated using the won cards
         """
 
+        self.id = str(uuid.uuid4())
         self.name = name
         self.game = game
         self.cards = Cards(**{card_suit: card_amount})

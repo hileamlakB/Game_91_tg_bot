@@ -73,29 +73,36 @@ class G91Tg_eingine:
 
         if len(cmd) < 2:
             bot.send_message(chat_id, noid_msg)
+            return 
 
         game_id = cmd[1]
         # check if the game id is n the group data
         if game_id in context.chat_data:
             current_game = context.chat_data[game_id]
             user = update.effective_user
-
             player = Player(user.first_name, current_game, "SPADE")
             player.user = user
 
-            if not current_game.is_started:
-                if current_game.add_player(player):
-                    context.bot_data[user.id] = player
-                    if current_game.is_ready():
-                        bot.send_message(chat_id, ready_msg)
-                else:
-                    bot.send_message(chat_id, maxp_msg)
-            else:
+            if user.id in context.bot_data:
+                bot.send_message(chat_id, f"{user.first_name} is already added!")
+                return
+
+            if current_game.is_started:
                 bot.send_message(chat_id, xaddp_msg)
+                return
+
+            if not current_game.add_player(player):
+                bot.send_message(chat_id, maxp_msg)
+                return
+           
+            context.bot_data[user.id] = player
+            if current_game.is_ready():
+                bot.send_message(chat_id, ready_msg)
+
         else:
             bot.send_message(chat_id, xgame_msg)
 
-    def start_game(update: Update, context: CallbackContext) -> None:
+    def start_game(self, update: Update, context: CallbackContext) -> None:
         """ Starts a game with a specified id """
 
         cmd = update.message.text.split(" ")
@@ -106,6 +113,7 @@ class G91Tg_eingine:
 
         if len(cmd) < 2:
             bot.send_message(chat_id, noid_msg)
+            return
 
         game_id = cmd[1]
         if game_id in context.chat_data:
@@ -212,7 +220,7 @@ class G91Tg_eingine:
         to the command"""
 
         cmd = update.message.text.split(" ")[0]
-        chat_type = update.message.chact.type
+        chat_type = update.message.chat.type
 
         if cmd in self.cmd_map:
             if chat_type in self.cmd_map[cmd][0]:

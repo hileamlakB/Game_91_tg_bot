@@ -112,11 +112,13 @@ class Game_91(CardGame):
         If the game is already started it does nothing.
         Returns  None in both cases
         """
+
         if not self.is_started:
             self.is_started = True
             self.round = 1
             self.prize_cards = Cards(CLUBS="ALL")
             self.current_prize = self.prize_cards.get_random()
+            print(self.current_prize)
             self.prize_cards.set_suit("CLUBS")
 
     def add_bid(self, player: Player, bid: int):

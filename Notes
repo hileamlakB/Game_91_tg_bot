@@ -3,3 +3,6 @@ Improve the game engine's start method
 After tests has been created, add integration actiona and linting to your repo
 
 After image addition, reogranize your structure into a nice folder hyrarcy, and packages
+
+Have a stop method incase the players want to restart mid game or start a new one for 
+some reason, this method should call the clearn up method from anythim

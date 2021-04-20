@@ -4,22 +4,23 @@ This file containes all the messages used by the
 telegram game 91 engine
 """
 
-game_create =  """
+game_created =  """
 **********************************
-* Game {} created                *
-* We now need players to play    *
-* the start the game.            *
-*                                *
-* In this game we at least need  *
-* {} players, and at most {}     *
-* players.                       *
-*                                *
-* Any one who wants to play can  *
-* type !ADD {game_id}. They will *
-* then automatically be added to *
-* the current Game.              *
-*                                *
-* Waiting for you to join!!      *
+ Created
+ Game {} 
+ We now need some players to    
+ the start the game.            
+                                
+ In this game we at least need  
+ {} players, and at most {}     
+ players.                       
+                                
+ Any one who wants to play can  
+ type !ADD <game_id>. They will 
+ then automatically be added to 
+ the current Game.              
+                                
+ Waiting for you to join!!      
 **********************************
 """
 ready_msg = """
