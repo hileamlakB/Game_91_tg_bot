@@ -11,9 +11,9 @@ from cardgame import CardGame
 
 
 class Game_91(CardGame):
-    """ 
-    A game object for the 91 card game 
-    rules for the game can be found in 
+    """
+    A game object for the 91 card game
+    rules for the game can be found in
     the pdf file in this repository.
 
     Attributes
@@ -28,7 +28,7 @@ class Game_91(CardGame):
 
     def __init__(self):
         """
-        Creates a game 91 object, which can be 
+        Creates a game 91 object, which can be
         used to store and manipulate different
         datas about players and score in different
         stages of the game. It works well with a game
@@ -50,7 +50,7 @@ class Game_91(CardGame):
         @bids - is the list of bids made and also the details  about
               the bid including the bidder in a key-value pair
         """
-        self.id = str(uuid.uuid4())
+        self.id = str(uuid.uuid4())[:4]
         self.players = []
         self.game_stat = False
         self.is_started = False
@@ -63,7 +63,7 @@ class Game_91(CardGame):
         """
         Addes a new player to
         the current game if it isn't full
-       
+
         Returns True on success and False on failer
         This will only fail if the maximum number of
         players is reached
@@ -75,7 +75,7 @@ class Game_91(CardGame):
         return False
 
     def show_status(self):
-        """ 
+        """
         Returns a string containing
         the status of each player and
         the whole game separated by a
@@ -95,7 +95,7 @@ class Game_91(CardGame):
         """
         Checks if the game is ready to be started
         according to the rules
-        
+
         Returns True if it is and False if not
         """
 
@@ -108,7 +108,7 @@ class Game_91(CardGame):
         """
         Changes the status of the game as started,
         Sets the round, the prize_cards and other variables
-        
+
         If the game is already started it does nothing.
         Returns  None in both cases
         """
@@ -117,7 +117,7 @@ class Game_91(CardGame):
             self.is_started = True
             self.round = 1
             self.prize_cards = Cards(CLUB="ALL")
-            self.current_prize = self.prize_cards.get_random()
+            self.current_prize = [self.prize_cards.get_random()]
             self.prize_cards.set_suit("CLUBS")
 
     def add_bid(self, player: Player, bid: int):
@@ -126,7 +126,7 @@ class Game_91(CardGame):
         The round will be the key and the value will
         be a dictionary having the player as a key and the
         bid amount as a value. It first checks if the player
-        hasn't already bided by first adding the bid to the 
+        hasn't already bided by first adding the bid to the
         player object.
 
         Returns the result of adding the bid to the player object
@@ -141,7 +141,7 @@ class Game_91(CardGame):
         return p_bid
 
     def is_round_complete(self):
-        """ 
+        """
         Checks if the current round is complete
         by counting the number of bids made
 
@@ -154,7 +154,7 @@ class Game_91(CardGame):
 
     def next_round(self):
         """
-        Moves the game into the next round if the 
+        Moves the game into the next round if the
         current round is complete. And give back all
         the players their ability to bid again.
 
@@ -200,15 +200,18 @@ class Game_91(CardGame):
         """
         Handles winners in a round. Only if the round is complete.
         Better to check if the current round is complete before
-        calling this function as the retunrned value may create 
+        calling this function as the retunrned value may create
         confusion for the caller.
+
+        Returns None if the round is not complete
+        Returns [None, 0] if there was a tie
         """
- 
+
         # format [Bidder, bid]
         max_bid = [None, 0]
 
         if not self.is_round_complete():
-            return max_bid
+            return None
 
         # choose the maximum bid of this round
         for bid in self.bids[f"{self.round}"]:
@@ -216,29 +219,54 @@ class Game_91(CardGame):
                 if value > max_bid[1]:
                     max_bid = [player, value]
 
-        # check if there is tie by counting the number of
-        # maximum bids
+        # check if there is tie by counting the number of maximum bids
         all_bids = []
         for bid in self.bids[f"{self.round}"]:
             all_bids += [value for _, value in bid.items()]
         if all_bids.count(max_bid[1]) != 1:  #check if there is a repeated maximum
             max_bid = [None, 0]
 
+
         if max_bid[0]:
-            max_bid[0].add_won(self.prize_cards.suit, max_bid[1])
+            # add the won card to the  bidders cards
+            for card in self.current_prize:
+                max_bid[0].add_won(card)
             if self.prize_cards.ncards() != 0:
-                self.current_prize = self.prize_cards.get_random()
+                self.current_prize = [self.prize_cards.get_random()]
+        else: # the case of a tie
+            if self.prize_cards.ncards() != 0:
+                self.current_prize += [self.prize_cards.get_random()]
+
 
         return max_bid
 
     def final_winner(self):
         """
-            Returns the winner by comparing every players won cards
+            Returns a list of the maximum
+            scorers
         """
-        winner = [None, 0]
+        w_score = float('-inf')
+        p_totals = {}
         if self.is_complete():
             for player in self.players:
                 total = player.calculate_total()
-                if total > winner[1]:
-                    winner = [player, total]
-        return winner
+                if total not in p_totals:
+                    p_totals[total] = [player]
+                else:
+                    p_totals[total].append(player)
+                if total > w_score:
+                    w_score = total
+
+
+        return p_totals[w_score]
+
+
+    def get_prize(self):
+        """
+        Returns the current prizes for biding in form of a string
+        """
+
+        prize = ""
+        for card in self.current_prize:
+            prize += f"-> The {card[1]} of {card[0]} is up for a bid\n"
+        return prize

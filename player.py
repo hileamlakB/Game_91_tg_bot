@@ -15,7 +15,7 @@ class Player:
                  card_suit: str,
                  card_amount="ALL"):
         """ Creates a card player object.
-        The player is suited to be a card game 
+        The player is suited to be a card game
         player
 
         Attributes
@@ -42,7 +42,7 @@ class Player:
         self.total_points = 0
 
     def add_bid(self, bid, suit=None):
-        """ 
+        """
         Adds the current bid of this player at the end of the bid list
         and changes the bidding status of the player.
 
@@ -50,7 +50,8 @@ class Player:
         the suit of the house
 
         Returns the bid card on success
-        or an empty list if it fails
+        None if the plyaer can't bid in this round
+        or an empty list if it the player is bidding with a card they don't have
         """
 
         if not suit:
@@ -63,13 +64,13 @@ class Player:
                 self.can_bid = False
                 return removed
             return []
-        return []
+        return None
 
-    def add_won(self, suit, value):
+    def add_won(self, card):
         """
         Adds a card to the players won list
         """
-        self.won.append([suit, value])
+        self.won.append(card)
 
     def calculate_total(self):
         """

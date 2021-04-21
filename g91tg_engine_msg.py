@@ -71,6 +71,7 @@ init_msg = "The game is already started. Enjoy it!!"
 bid4_msg="You are now bidding for the {} of {}"
 bid_msg="Make your round {} bids"
 nstart_msg = "The game isn't ready to be started! Add more players"
+win_msg = "Congratulation {}! You won the game with {} points"
 
 ins_msg="""
 Players and Cards
@@ -103,7 +104,7 @@ To play this game, you have to creat a game first youcan do that by typing the c
 All commands in this bot start  with `!`. And you can learn more about them if you type `!CMD`.
 """
 cmd_msg="""
-cmds to interact with the bot
+comands to interact with the bot
 ****************************
 => `!CRT` - create command that creates a game session and sends the game id
 
@@ -117,3 +118,8 @@ cmds to interact with the bot
 
 => `!CMD` - Gives this list of commands and their functinoality
 """
+tie_msg = """
+There was a tie in this round no one won this  time.
+The prize will go the next round and will be agrigated with the next round's prize
+"""
+xplay_msg = "You aren't playing any game! Go to a group and create one"

@@ -33,7 +33,7 @@ class G91Tg_eingine:
         "!STR" : [["group"], self.start_game],
         "!BID" : [["private"], self.bid_card],
         "!INS" : [["group","private"], self.show_ins],
-        "!CMD" : [["group","private"], self.show_ins],
+        "!CMD" : [["group","private"], self.show_cmd],
         }
 
     def create_game(self, update: Update, context: CallbackContext) -> None:
@@ -115,43 +115,43 @@ class G91Tg_eingine:
             return
 
         game_id = cmd[1]
-        if game_id in context.chat_data:
-            current_game = context.chat_data[game_id]
-            is_init = True
+        if game_id not in context.chat_data:
+             bot.send_message(chat_id, nstart_msg)
+             return
 
-            if current_game.is_started:
-                bot.send_message(chat_id, init_msg)
+        current_game = context.chat_data[game_id]
+        is_init = True
 
-            elif current_game.is_ready():
+        if current_game.is_started:
+            bot.send_message(chat_id, init_msg)
+            return
+
+        if current_game.is_ready():
+            for player in current_game.get_players():
+                try:
+                    pid = player.user['id']
+                    bot.send_message(pid, "TEST")
+
+                except Unauthorized:
+                    is_init = False
+                    uusers.append(player.user['first_name'])
+
+            if is_init:
+                current_game.start()
+                bot.send_message(chat_id, started_msg)
+                bot.send_message(chat_id, fround_msg)
+                bot.send_message(chat_id, current_game.get_prize())
+
                 for player in current_game.get_players():
-                    try:
-                        pid = player.user['id']
-                        bot.send_message(pid, "TEST")
-
-                    except Unauthorized:
-                        is_init = False
-                        uusers.append(player.user['first_name'])
-
-                if is_init:
-                    current_game.start()
-                    bot.send_message(chat_id, started_msg)
-                    bot.send_message(chat_id, fround_msg)
-
-                    # handle the case where there are more than one prize cards
-                    bot.send_message(chat_id,
-                        bid4_msg.format(current_game.current_prize[1], current_game.current_prize[0])
-                    )
-
-                    for player in current_game.get_players():
-                        player_user_id = player.user['id']
-                        bot.send_message(player_user_id, bid_msg.format(current_game.round))
-                else:
-                    msg = xuser_msg + "\n"
-                    for user in uusers:
-                        msg += f"Player {user} hasn't initialized the bot\n"
-                    bot.send_message(chat_id, msg)
+                    pid = player.user['id']
+                    bot.send_message(pid, bid_msg.format(current_game.round))
             else:
-                bot.send_message(chat_id, nstart_msg)
+                msg = xuser_msg + "\n"
+                for user in uusers:
+                    msg += f"Player {user} hasn't initialized the bot\n"
+                bot.send_message(chat_id, msg)
+
+
 
     def bid_card(self, update: Update, context: CallbackContext) -> None:
         """ Allows For cards to be bid in private chats """
@@ -160,49 +160,63 @@ class G91Tg_eingine:
         cmd = update.message.text.split(" ")
 
         user = update.effective_user
-        if user.id in context.bot_data:
-            player = context.bot_data[user.id]
+        if user.id not in context.bot_data:
+            bot.send_message(user['id'], xplay_msg)
+            return
 
-            current_game = player.game # handle the case where a plyaer could be part of many games
-            current_game.add_bid(player, int(cmd[1]))
-            group_id = current_game.chat_id
-            if current_game.is_round_complete():
-                if current_game.is_complete():
-                    bot.send_message(group_id, f"{current_game.get_bids()}")
-                    winner = current_game.handle_winner()
-                    if winner[0] != None:
-                        bot.send_message(group_id, f"{winner[0].name} won this round")
-                    f_winner = current_game.final_winner()
-                    if f_winner[0]:
-                        bot.send_message(
-                            group_id,
-                            f"Congratulation {f_winner[0].name}! You won the game with {f_winner[1]} points"
-                            )
-                        self.clean_up(update, context)
+        player = context.bot_data[user.id]
+        # handle the case where a plyaer could be part of many games
+        current_game = player.game
 
+        try:
+            bid_stat = current_game.add_bid(player, int(cmd[1]))
+        except ValueError:
+            bot.send_message(user['id'], "Use a proper card value")
+            return
+
+        if bid_stat == None:
+            bot.send_message(user['id'], "You can't bid now! wait till this round is over")
+            return
+
+        if bid_stat == []:
+            bot.send_message(user['id'], "You can't bid with that card you don't have it")
+            return
+
+        group_id = current_game.chat_id
+
+        if current_game.is_round_complete():
+            if current_game.is_complete():
+                bot.send_message(group_id, f"{current_game.get_bids()}")
+                winner = current_game.handle_winner()
+                if winner[0] != None:
+                    bot.send_message(group_id, f"{winner[0].name} won this round")
                 else:
-                    bot.send_message(group_id, f"{current_game.get_bids()}")
-                    winner = current_game.handle_winner()
-                    if winner[0] != None:
-                        bot.send_message(group_id,
-                                            f"{winner[0].name} won this round")
-                        current_game.next_round()
-                        bot.send_message(
-                            group_id,
-                            f"You are now bidding for the {current_game.current_prize[1]} of {current_game.current_prize[0]}"
-                            )
-                        for player in current_game.get_players():
-                            pid = player.user['id']
-                            bot.send_message(
-                                    chat_id=pid,
-                                    text=
-                                    f"""Make your round {current_game.round} bids"""
-                                )
-        else:
-            bot.send_message(
-                user['id'],
-                "You aren't playing any game! Go to a group and create one")
+                    bot.send_message(group_id, tie_msg)
+                f_winner = current_game.final_winner()
+                if len(f_winner) == 1:
+                    bot.send_message(group_id, win_msg.format(f_winner[0].name, f_winner[1]))
+                    self.clean_up(update, context)
+                else:
+                    w_msg = "NO one won!! There was a tie between "
+                    for winner in f_winner:
+                        w_msg += f"{winner.name}, "
+                    bot.send_message(group_id, w_msg)
+                    self.clean_up(update, context)
 
+            else:
+                bot.send_message(group_id, f"{current_game.get_bids()}")
+                winner = current_game.handle_winner()
+                if winner[0] != None:
+                    bot.send_message(group_id, f"{winner[0].name} won this round")
+                else:
+                    bot.send_message(group_id, tie_msg)
+                current_game.next_round()
+                bot.send_message(group_id, current_game.get_prize())
+                bot.send_message(group_id, f"Make your round {current_game.round} bids")
+                for player in current_game.get_players():
+                    pid = player.user['id']
+                    bot.send_message(pid, f"Make your round {current_game.round} bids")
+                self.clean_up(update, context)
     def clean_up(self,  update: Update, context: CallbackContext) -> None:
         """
             Cleans up data releated to a specific game

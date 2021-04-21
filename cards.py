@@ -12,15 +12,15 @@ class Cards:
     """ A class to manipulate playing cards """
 
     #CARD_VALUES = list(range(2, 11)) + ['A', 'J', 'Q', 'K']
-    CARD_VALUES = list(range(1, 3))
+    CARD_VALUES = list(range(1, 4))
     SUIT_OPTIONS = ["CLUB", "DIAMOND", "SPADE", "FLOWER"]
 
     def __init__(self, *args, **kwargs):
         """intializes a cards object
 
-        Takes keyword arguments and returns 
+        Takes keyword arguments and returns
         a list of the cards.
- 
+
         The key could be the suit of the card if any
         keyword argument is passed and the value should
         be a list of tuples discribing the suit and value of a card.
@@ -50,9 +50,9 @@ class Cards:
                     self.cards += [card]
 
     def remove(self, card):
-        """ 
+        """
         Removes a card from the set of cards
-        Returns 
+        Returns
            @the list describing the card if successful
            @empty_list if it fails
         """
@@ -65,7 +65,7 @@ class Cards:
 
     def set_suit(self, suit):
         """
-        This method is idea if all the 
+        This method is idea if all the
         cards have the same suit. And it
         is used to set it.
         Only use if all the cards have similar suit
@@ -77,10 +77,10 @@ class Cards:
         """
         returns a random card from the list and
         delets it after that unless other wise
-        not told not to delete through the delete 
+        not told not to delete through the delete
         argument
         """
- 
+
         if len(self.cards) != 0:
             rand_card = random.choice(self.cards)
             if delete:
@@ -95,12 +95,19 @@ class Cards:
         """
         return len(self.cards)
 
+    def isin(self, card):
+        """
+        Checks if card is inside  this card list
+        """
+
+        return card in self.cards
+
     def isCard(card):
         """
         checks if card is in a proper card format
         and returns true if it is. Or False if it isn't
         """
-        
+
         if len(card) == 2:
             if card[0] in Cards.SUIT_OPTIONS and card[1] in Cards.CARD_VALUES:
                 return True
