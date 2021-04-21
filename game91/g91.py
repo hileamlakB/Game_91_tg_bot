@@ -5,9 +5,9 @@ Mostly the games are card games
 that are ideal for math camps
 """
 import uuid
-from cards import Cards
-from player import Player
-from cardgame import CardGame
+from card_games.cards import Cards
+from card_players.player import Player
+from card_games.cardgame import CardGame
 
 
 class Game_91(CardGame):

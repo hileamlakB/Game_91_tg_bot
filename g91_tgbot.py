@@ -3,10 +3,10 @@
 This script will start the telegram bot
 that facilitates the game play of game-91
 """
-from g91tgengine import G91Tg_eingine
+from game91.g91_tgngin import G91_tgingin
 import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
-from telegram_handlers import start, help_command
+from game91.tg_basic import start, help_command
 
 
 # Enable logging
@@ -18,7 +18,7 @@ def main() -> None:
     """Call this method to the start the bot."""
 
     # create a telegram `game 91` game_engine
-    g_engine = G91Tg_eingine()
+    g_engine = G91_tgingin()
 
     # Create the Updater and pass it your bot's token.
     updater = Updater("1792874118:AAH31TYxIi2Ct2Tk6UEbJ0RKrOqzW5BTYjQ",

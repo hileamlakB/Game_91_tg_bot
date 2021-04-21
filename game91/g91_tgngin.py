@@ -8,12 +8,12 @@ from telegram import Update
 from telegram.ext import  CallbackContext
 from telegram.error import Unauthorized
 
-from game_91 import Game_91
-from player import Player
-from g91tg_engine_msg import *
+from .g91 import Game_91
+from card_players.player import Player
+from .g91_msgs import *
 
 
-class G91Tg_eingine:
+class G91_tgingin:
     """
     A game_91 card game engine
     to run the game on a telegram bot
@@ -46,8 +46,7 @@ class G91Tg_eingine:
         bot = context.bot
 
         # check if no game object in this group before you
-        # create a new object, t be impoved in the future
-
+        # create a new object, to be impoved in the future
         if not context.chat_data:
             game = Game_91()
 
@@ -76,30 +75,30 @@ class G91Tg_eingine:
 
         game_id = cmd[1]
         # check if the game id is n the group data
-        if game_id in context.chat_data:
-            current_game = context.chat_data[game_id]
-            user = update.effective_user
-            player = Player(user.first_name, current_game, "SPADE")
-            player.user = user
-
-            if user.id in context.bot_data:
-                bot.send_message(chat_id, f"{user.first_name} is already added!")
-                return
-
-            if current_game.is_started:
-                bot.send_message(chat_id, xaddp_msg)
-                return
-
-            if not current_game.add_player(player):
-                bot.send_message(chat_id, maxp_msg)
-                return
-
-            context.bot_data[user.id] = player
-            if current_game.is_ready():
-                bot.send_message(chat_id, ready_msg)
-
-        else:
+        if game_id not in context.chat_data:
             bot.send_message(chat_id, xgame_msg)
+            return
+
+        current_game = context.chat_data[game_id]
+        user = update.effective_user
+        player = Player(user.first_name, current_game, "SPADE")
+        player.user = user
+
+        if user.id in context.bot_data:
+            bot.send_message(chat_id, f"{user.first_name} is already added!")
+            return
+
+        if current_game.is_started:
+            bot.send_message(chat_id, xaddp_msg)
+            return
+
+        if not current_game.add_player(player):
+            bot.send_message(chat_id, maxp_msg)
+            return
+
+        context.bot_data[user.id] = player
+        if current_game.is_ready():
+            bot.send_message(chat_id, ready_msg)
 
     def start_game(self, update: Update, context: CallbackContext) -> None:
         """ Starts a game with a specified id """
@@ -197,7 +196,7 @@ class G91Tg_eingine:
                     bot.send_message(group_id, win_msg.format(f_winner[0].name, f_winner[1]))
                     self.clean_up(update, context)
                 else:
-                    w_msg = "NO one won!! There was a tie between "
+                    w_msg = "No one won!! There was a tie between "
                     for winner in f_winner:
                         w_msg += f"{winner.name}, "
                     bot.send_message(group_id, w_msg)
@@ -217,6 +216,7 @@ class G91Tg_eingine:
                     pid = player.user['id']
                     bot.send_message(pid, f"Make your round {current_game.round} bids")
                 self.clean_up(update, context)
+
     def clean_up(self,  update: Update, context: CallbackContext) -> None:
         """
             Cleans up data releated to a specific game

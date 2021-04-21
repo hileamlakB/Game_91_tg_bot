@@ -3,7 +3,7 @@
 Defines a card game player object
 """
 import uuid
-from cards import Cards
+from card_games.cards import Cards
 
 
 class Player:
