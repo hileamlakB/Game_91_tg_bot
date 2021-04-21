@@ -6,8 +6,9 @@
 -   [x] Version 0.5 => Image addition and UI improvement
 -   [x] Version 0.599 => Refactor to make atmost 30 lines per function
 -   [ ] Version 0.6 => Write tests
-        Test scalability for multiple players
--   [ ] version 0.7 => give different suits for different players
+-   [ ] Version 0.65 => Test scalability for multiple players
+-   [ ] Version 0.699 => Pylama linting and githubactions
+-   [x] version 0.7 => give different suits for different players
 -   [ ] Version 0.8 => Multi player mode both in different groups and in single groups
 -   [ ] Version 0.9 => Error checking, edge case handling, more test
 -   [ ] Version 0.98 => group score board for compitation

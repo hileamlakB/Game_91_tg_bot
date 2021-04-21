@@ -43,14 +43,14 @@ class G91_tgingin:
         return the next unused suit
         """
 
-        if self.current_optiion == 4:
+        if self.current_option == 4:
             self.current_option = 0
 
         current = self.current_option
         self.current_option += 1
         return self.SUIT_OPTIONS[current]
 
-    def req_bid(self, group_id, chat_id, game):
+    def req_bid(self, bot, group_id, game):
         """
         Sends a bid request including images to private and group messages
         """
@@ -60,9 +60,9 @@ class G91_tgingin:
             iname = str(prize[1]) + prize[0][0] + ".png"
             with open("./data/card_images/"+iname, 'rb') as im:
                 bot.send_photo(group_id, photo=im.read(), caption=f"The {prize[1]} of {prize[0]} is up for a bid" )
-        bot.send_message(pid, bid_msg.format(game.round))
+        bot.send_message(group_id, bid_msg.format(game.round))
 
-        for player in curent_game.get_players():
+        for player in game.get_players():
             pid = player.user['id']
             bot.send_message(pid, bid_msg.format(game.round))
 
@@ -82,8 +82,9 @@ class G91_tgingin:
 
             except Unauthorized:
                 uusers.append(player.user['first_name'])
+        return uusers
 
-    def req_init(self, uusers, bot):
+    def req_init(self, bot, group_id, uusers):
         """
         requests users who haven't initalized to start converation with bot
         Takes a list of unauthorized users an the bot object
@@ -91,7 +92,7 @@ class G91_tgingin:
         msg = xuser_msg + "\n"
         for user in uusers:
             msg += f"Player {user} hasn't initialized the bot\n"
-        bot.send_message(chat_id, msg)
+        bot.send_message(group_id, msg)
 
     def check_bid(self, bot, user_id, game, player, bid):
         """
@@ -102,7 +103,7 @@ class G91_tgingin:
         otherwise it returns True
         """
         try:
-            bid_stat = game.add_bid(player, int(cmd[1]))
+            bid_stat = game.add_bid(player, int(bid))
         except ValueError:
             bot.send_message(user_id, "Use a proper card value")
             return False
@@ -132,7 +133,7 @@ class G91_tgingin:
         """Poss the fnial message one the game is over"""
         f_winner = game.final_winner()
         if len(f_winner) == 1:
-            bot.send_message(group_id, win_msg.format(f_winner[0].name, f_winner[1]))
+            bot.send_message(group_id, win_msg.format(f_winner[0].name, f_winner[0].total_points))
             return
 
         w_msg = "No one won!! There was a tie between "
@@ -227,15 +228,16 @@ class G91_tgingin:
 
         if curent_game.is_ready():
             # check if all the playrs have started bot messaging
-            uusers = self.test_init(bot, curent_game):
+            uusers = self.test_init(bot, curent_game)
 
             if not uusers:
                 curent_game.start()
                 bot.send_message(chat_id, started_msg)
-                self.req_bid(group_id, chat_id, curent_game)
+                self.req_bid(bot, chat_id, curent_game)
+
 
             else:
-                self.req_init(uusers, bot)
+                self.req_init(bot, chat_id, uusers)
 
     def bid_card(self, update: Update, context: CallbackContext) -> None:
         """ Process bids from uses on private chat """
@@ -259,14 +261,19 @@ class G91_tgingin:
         if curent_game.is_round_complete():
 
             bot.send_message(group_id, f"{curent_game.get_bids()}")
-            # post rond results in the end
+            # post round results in the end
             self.post_round(bot, group_id, curent_game)
+            print(curent_game.round)
+            curent_game.next_round()
+            print(curent_game.round)
 
             if curent_game.is_complete():
+                print("is_complete")
                 self.post_final(bot, group_id, curent_game)
 
             else:
-                self.req_bid()
+                self.req_bid(bot, group_id, curent_game)
+
             self.clean_up(update, context)
 
     def clean_up(self,  update: Update, context: CallbackContext) -> None:

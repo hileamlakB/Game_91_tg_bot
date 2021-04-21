@@ -118,7 +118,7 @@ class Game_91(CardGame):
             self.round = 1
             self.prize_cards = Cards(CLUB="ALL")
             self.current_prize = [self.prize_cards.get_random()]
-            self.prize_cards.set_suit("CLUBS")
+            self.prize_cards.set_suit("CLUB")
 
     def add_bid(self, player: Player, bid: int):
         """
@@ -175,10 +175,11 @@ class Game_91(CardGame):
         Checks if the game is complete by checking
         the number of  prize cards left.
         """
-
-        if self.prize_cards.ncards() == 0:
-            return True
-        return False
+        print("checing if complete")
+        for player in self.players:
+            if player.cards.ncards() != 0:
+               return False
+        return True
 
     def get_bids(self):
         """

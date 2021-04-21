@@ -29,3 +29,7 @@ when a close command is written correct the input
 Show status could also include the curreent round prizes and the won cards or  what the user specifically wants to see with specific arguement
 
 Optional round end messages on private chat (congratulation or keep trying message) as an optional feature
+
+Add an option not to use pictures
+
+Some seconds between consecuent messages to give players engouh time to read

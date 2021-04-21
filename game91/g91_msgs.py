@@ -13,7 +13,7 @@ game_created =  """
 
  In this game we at least need {} players, and at most {} players.
 
- Any one who wants to play can type !ADD <game id> (the game id value inside <>). They will then automatically be added to the current Game.
+ Any one who wants to play can type !ADD <game id> (the game id value instead of <game id>). They will then automatically be added to the current Game.
 
  Waiting for you to join!!
 **********************************
@@ -54,25 +54,18 @@ Create a new game if you don't have one.
 
 For more infor about the commands type !CMD
 """
-xuser_msg = """
-For the bot to be able to receive your bid you have to initalize a conversation with it. You can do that by going to @game_91_bot and
-pressing start."""
-started_msg="""
-The game is now started no more players can be added! you can now play. Type !INS any
-time to see instructions.
-"""
+xuser_msg = "For the bot to be able to receive your bid you have to initialize a conversation with it. You can do that by going to @game_91_bot and pressing start. After that you can retype the !STR command"
+started_msg="The game is now started no more players can be added! you can now play. Type !INS anytime to see instructions."
 fround_msg="""
 Round one has begun!!!
 
 Players, make you bids in private chats.
 """
-
 init_msg = "The game is already started. Enjoy it!!"
 bid4_msg="You are now bidding for the {} of {}"
 bid_msg="Make your round {} bids!!"
 nstart_msg = "The game isn't ready to be started! Add more players"
 win_msg = "Congratulation {}! You won the game with {} points"
-
 ins_msg="""
 Players and Cards
 **************************
