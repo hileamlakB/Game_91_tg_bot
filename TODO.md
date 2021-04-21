@@ -3,7 +3,8 @@
 -   [x] Version 0.3 => Correct Text information, simpler commands, and ux
 -   [x] Version 0.4 => Correct Prize output (Handle Tie's)
 -   [x] version 0.499 => Refactor and restructure folder
--   [ ] Version 0.5 => Image addition and UI improvement
+-   [x] Version 0.5 => Image addition and UI improvement
+-   [x] Version 0.599 => Refactor to make atmost 30 lines per function
 -   [ ] Version 0.6 => Write tests
         Test scalability for multiple players
 -   [ ] version 0.7 => give different suits for different players
