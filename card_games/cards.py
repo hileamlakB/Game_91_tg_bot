@@ -12,7 +12,7 @@ class Cards:
     """ A class to manipulate playing cards """
 
     #CARD_VALUES = list(range(2, 11)) + ['A', 'J', 'Q', 'K']
-    CARD_VALUES = list(range(1, 4))
+    CARD_VALUES = list(range(2, 4))
     SUIT_OPTIONS = ["CLUB", "DIAMOND", "SPADE", "FLOWER"]
 
     def __init__(self, *args, **kwargs):

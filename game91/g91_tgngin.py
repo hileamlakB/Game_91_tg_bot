@@ -9,9 +9,8 @@ from telegram.ext import  CallbackContext
 from telegram.error import Unauthorized
 
 from .g91 import Game_91
-from card_players.player import Player
 from .g91_msgs import *
-
+from card_players.player import Player
 
 class G91_tgingin:
     """
@@ -32,9 +31,114 @@ class G91_tgingin:
         "!ADD" : [["group"], self.add_player],
         "!STR" : [["group"], self.start_game],
         "!BID" : [["private"], self.bid_card],
-        "!INS" : [["group","private"], self.show_ins],
-        "!CMD" : [["group","private"], self.show_cmd],
+        "!INS" : [["group", "private"], self.show_ins],
+        "!CMD" : [["group", "private"], self.show_cmd],
         }
+
+        self.SUIT_OPTIONS = ["CLUB", "DIAMOND", "SPADE", "FLOWER"]
+        self.current_option = 0
+
+    def next_suit(self):
+        """
+        return the next unused suit
+        """
+
+        if self.current_optiion == 4:
+            self.current_option = 0
+
+        current = self.current_option
+        self.current_option += 1
+        return self.SUIT_OPTIONS[current]
+
+    def req_bid(self, group_id, chat_id, game):
+        """
+        Sends a bid request including images to private and group messages
+        """
+        bot.send_message(group_id, f"Here are round {game.round} prizes")
+        prizes = game.current_prize
+        for prize in prizes:
+            iname = str(prize[1]) + prize[0][0] + ".png"
+            with open("./data/card_images/"+iname, 'rb') as im:
+                bot.send_photo(group_id, photo=im.read(), caption=f"The {prize[1]} of {prize[0]} is up for a bid" )
+        bot.send_message(pid, bid_msg.format(game.round))
+
+        for player in curent_game.get_players():
+            pid = player.user['id']
+            bot.send_message(pid, bid_msg.format(game.round))
+
+    def test_init(self, bot, game):
+        """
+        Checks if bot messaging is initialized with all players
+        returns a list of all the players that haven't initialized bot chat.
+        TODO
+        See if there is a better way to check autherization without sening messages
+        """
+        uusers = []
+
+        for player in game.get_players():
+            try:
+                pid = player.user['id']
+                bot.send_message(pid, "TEST")
+
+            except Unauthorized:
+                uusers.append(player.user['first_name'])
+
+    def req_init(self, uusers, bot):
+        """
+        requests users who haven't initalized to start converation with bot
+        Takes a list of unauthorized users an the bot object
+        """
+        msg = xuser_msg + "\n"
+        for user in uusers:
+            msg += f"Player {user} hasn't initialized the bot\n"
+        bot.send_message(chat_id, msg)
+
+    def check_bid(self, bot, user_id, game, player, bid):
+        """
+        Checks if a bid is correct, based on the rules, and the
+        input from the player.
+
+        If any test fail sends a pivate message to the bidder and returns False
+        otherwise it returns True
+        """
+        try:
+            bid_stat = game.add_bid(player, int(cmd[1]))
+        except ValueError:
+            bot.send_message(user_id, "Use a proper card value")
+            return False
+
+        if bid_stat == None:
+            bot.send_message(user_id, "You can't bid now! wait till this round is over")
+            return False
+
+        if bid_stat == []:
+            bot.send_message(user_id, "You can't bid with that card you don't have it")
+            return False
+
+        return True
+
+    def post_round(self, bot, group_id, game):
+        """
+        Posts round end information, including who won the round
+        """
+        winner = game.handle_winner()
+        if winner[0] != None:
+            bot.send_message(group_id, f"{winner[0].name} won this round")
+            return
+
+        bot.send_message(group_id, tie_msg)
+
+    def post_final(self, bot, group_id, game):
+        """Poss the fnial message one the game is over"""
+        f_winner = game.final_winner()
+        if len(f_winner) == 1:
+            bot.send_message(group_id, win_msg.format(f_winner[0].name, f_winner[1]))
+            return
+
+        w_msg = "No one won!! There was a tie between "
+        for winner in f_winner:
+            w_msg += f"{winner.name}, "
+        bot.send_message(group_id, w_msg)
 
     def create_game(self, update: Update, context: CallbackContext) -> None:
         """
@@ -74,40 +178,38 @@ class G91_tgingin:
             return
 
         game_id = cmd[1]
-        # check if the game id is n the group data
+        # check if the game id is in the group data
         if game_id not in context.chat_data:
             bot.send_message(chat_id, xgame_msg)
             return
 
-        current_game = context.chat_data[game_id]
+        curent_game = context.chat_data[game_id]
         user = update.effective_user
-        player = Player(user.first_name, current_game, "SPADE")
+        player = Player(user.first_name, curent_game, self.next_suit())
         player.user = user
 
         if user.id in context.bot_data:
             bot.send_message(chat_id, f"{user.first_name} is already added!")
             return
 
-        if current_game.is_started:
+        if curent_game.is_started:
             bot.send_message(chat_id, xaddp_msg)
             return
 
-        if not current_game.add_player(player):
+        if not curent_game.add_player(player):
             bot.send_message(chat_id, maxp_msg)
             return
 
         context.bot_data[user.id] = player
-        if current_game.is_ready():
+        if curent_game.is_ready():
             bot.send_message(chat_id, ready_msg)
 
     def start_game(self, update: Update, context: CallbackContext) -> None:
         """ Starts a game with a specified id """
 
         cmd = update.message.text.split(" ")
-
         chat_id = update.message.chat_id
         bot = context.bot
-        uusers = []
 
         if len(cmd) < 2:
             bot.send_message(chat_id, noid_msg)
@@ -118,43 +220,25 @@ class G91_tgingin:
              bot.send_message(chat_id, nstart_msg)
              return
 
-        current_game = context.chat_data[game_id]
-        is_init = True
-
-        if current_game.is_started:
+        curent_game = context.chat_data[game_id]
+        if curent_game.is_started:
             bot.send_message(chat_id, init_msg)
             return
 
-        if current_game.is_ready():
-            for player in current_game.get_players():
-                try:
-                    pid = player.user['id']
-                    bot.send_message(pid, "TEST")
+        if curent_game.is_ready():
+            # check if all the playrs have started bot messaging
+            uusers = self.test_init(bot, curent_game):
 
-                except Unauthorized:
-                    is_init = False
-                    uusers.append(player.user['first_name'])
-
-            if is_init:
-                current_game.start()
+            if not uusers:
+                curent_game.start()
                 bot.send_message(chat_id, started_msg)
-                bot.send_message(chat_id, fround_msg)
-                bot.send_message(chat_id, current_game.get_prize())
+                self.req_bid(group_id, chat_id, curent_game)
 
-                for player in current_game.get_players():
-                    pid = player.user['id']
-                    bot.send_message(pid, bid_msg.format(current_game.round))
             else:
-                msg = xuser_msg + "\n"
-                for user in uusers:
-                    msg += f"Player {user} hasn't initialized the bot\n"
-                bot.send_message(chat_id, msg)
-
-
+                self.req_init(uusers, bot)
 
     def bid_card(self, update: Update, context: CallbackContext) -> None:
-        """ Allows For cards to be bid in private chats """
-
+        """ Process bids from uses on private chat """
         bot = context.bot
         cmd = update.message.text.split(" ")
 
@@ -164,58 +248,26 @@ class G91_tgingin:
             return
 
         player = context.bot_data[user.id]
+        # TODO
         # handle the case where a plyaer could be part of many games
-        current_game = player.game
+        curent_game = player.game
 
-        try:
-            bid_stat = current_game.add_bid(player, int(cmd[1]))
-        except ValueError:
-            bot.send_message(user['id'], "Use a proper card value")
+        if not self.check_bid(bot, user['id'], curent_game, player, cmd[1]):
             return
 
-        if bid_stat == None:
-            bot.send_message(user['id'], "You can't bid now! wait till this round is over")
-            return
+        group_id = curent_game.chat_id
+        if curent_game.is_round_complete():
 
-        if bid_stat == []:
-            bot.send_message(user['id'], "You can't bid with that card you don't have it")
-            return
+            bot.send_message(group_id, f"{curent_game.get_bids()}")
+            # post rond results in the end
+            self.post_round(bot, group_id, curent_game)
 
-        group_id = current_game.chat_id
-
-        if current_game.is_round_complete():
-            if current_game.is_complete():
-                bot.send_message(group_id, f"{current_game.get_bids()}")
-                winner = current_game.handle_winner()
-                if winner[0] != None:
-                    bot.send_message(group_id, f"{winner[0].name} won this round")
-                else:
-                    bot.send_message(group_id, tie_msg)
-                f_winner = current_game.final_winner()
-                if len(f_winner) == 1:
-                    bot.send_message(group_id, win_msg.format(f_winner[0].name, f_winner[1]))
-                    self.clean_up(update, context)
-                else:
-                    w_msg = "No one won!! There was a tie between "
-                    for winner in f_winner:
-                        w_msg += f"{winner.name}, "
-                    bot.send_message(group_id, w_msg)
-                    self.clean_up(update, context)
+            if curent_game.is_complete():
+                self.post_final(bot, group_id, curent_game)
 
             else:
-                bot.send_message(group_id, f"{current_game.get_bids()}")
-                winner = current_game.handle_winner()
-                if winner[0] != None:
-                    bot.send_message(group_id, f"{winner[0].name} won this round")
-                else:
-                    bot.send_message(group_id, tie_msg)
-                current_game.next_round()
-                bot.send_message(group_id, current_game.get_prize())
-                bot.send_message(group_id, f"Make your round {current_game.round} bids")
-                for player in current_game.get_players():
-                    pid = player.user['id']
-                    bot.send_message(pid, f"Make your round {current_game.round} bids")
-                self.clean_up(update, context)
+                self.req_bid()
+            self.clean_up(update, context)
 
     def clean_up(self,  update: Update, context: CallbackContext) -> None:
         """
@@ -227,7 +279,6 @@ class G91_tgingin:
         """
         Prints instruction to the one requesting it
         """
-
         bot = context.bot
         chat_id = update.message.chat_id
 
@@ -237,12 +288,10 @@ class G91_tgingin:
         """
         Prints instruction to the one requesting it
         """
-
         bot = context.bot
         chat_id = update.message.chat_id
 
         bot.send_message(chat_id, cmd_msg)
-
 
     def engine(self,  update: Update, context: CallbackContext) -> None:
         """

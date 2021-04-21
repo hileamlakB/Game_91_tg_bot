@@ -69,7 +69,7 @@ Players, make you bids in private chats.
 
 init_msg = "The game is already started. Enjoy it!!"
 bid4_msg="You are now bidding for the {} of {}"
-bid_msg="Make your round {} bids"
+bid_msg="Make your round {} bids!!"
 nstart_msg = "The game isn't ready to be started! Add more players"
 win_msg = "Congratulation {}! You won the game with {} points"
 
