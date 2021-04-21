@@ -1,14 +1,14 @@
-- [x] Version 0.1 => Proof of concept
-- [x] Version 0.2 => Documentations and Proper organization
-- [x] Version 0.3 => Correct Text information, simpler commands, and ux
-- [.] Version 0.4 => Correct Prize output (Handle Tie's)
-- [.] Version 0.5 => Image addition and UI improvement
-- [.] Version 0.6 => Write tests
-		            Test scalability for multiple players
-- [.] version 0.7 => give different suits for different players
-- [.] Version 0.8 => Multi player mode both in  different groups and in single groups
-- [.] Version 0.9 => Error checking, edge case handling, more test
-- [.] Version 0.99 => group score board for compitation
-- [.] Version 1.0 => Final Clean up and tidying
-- [.] Version 1.0 => First release
-- [.] version 1.1 => Add keyboard layout as a secondary option
+-   [x] Version 0.1 => Proof of concept
+-   [x] Version 0.2 => Documentations and Proper organization
+-   [x] Version 0.3 => Correct Text information, simpler commands, and ux
+-   [x] Version 0.4 => Correct Prize output (Handle Tie's)
+-   [.] Version 0.5 => Image addition and UI improvement
+-   [.] Version 0.6 => Write tests
+    Test scalability for multiple players
+-   [.] version 0.7 => give different suits for different players
+-   [.] Version 0.8 => Multi player mode both in different groups and in single groups
+-   [.] Version 0.9 => Error checking, edge case handling, more test
+-   [.] Version 0.99 => group score board for compitation
+-   [.] Version 1.0 => Final Clean up and tidying
+-   [.] Version 1.0 => First release
+-   [.] version 1.1 => Add keyboard layout as a secondary option
