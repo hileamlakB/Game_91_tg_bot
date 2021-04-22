@@ -27,12 +27,12 @@ class G91_tgingin:
         # format
         # {COMAND: [[CHAT_TYPE, . . .], CALLBACK_FUNCTION]}
         self.cmd_map = {
-        "!CRT" : [["group"], self.create_game],
-        "!ADD" : [["group"], self.add_player],
-        "!STR" : [["group"], self.start_game],
-        "!BID" : [["private"], self.bid_card],
-        "!INS" : [["group", "private"], self.show_ins],
-        "!CMD" : [["group", "private"], self.show_cmd],
+        "!CRT" : [["group", "supergroup"], self.create_game],
+        "!ADD" : [["group", "supergroup"], self.add_player],
+        "!STR" : [["group", "supergroup"], self.start_game],
+        "!BID" : [["private", "supergroup"], self.bid_card],
+        "!INS" : [["group", "private", "supergroup"], self.show_ins],
+        "!CMD" : [["group", "private", "supergroup"], self.show_cmd],
         }
 
         self.SUIT_OPTIONS = ["CLUB", "DIAMOND", "SPADE", "FLOWER"]
@@ -148,6 +148,7 @@ class G91_tgingin:
         """
 
         chat_id = update.message.chat_id
+        print(update.message)
         bot = context.bot
 
         # check if no game object in this group before you

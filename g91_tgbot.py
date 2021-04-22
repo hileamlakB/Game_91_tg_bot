@@ -5,7 +5,7 @@ that facilitates the game play of game-91
 """
 from game91.g91_tgngin import G91_tgingin
 import logging
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from game91.tg_basic import start, help_command
 
 
@@ -13,6 +13,7 @@ from game91.tg_basic import start, help_command
 log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(format=log_format, level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 def main() -> None:
     """Call this method to the start the bot."""
