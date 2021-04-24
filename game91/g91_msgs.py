@@ -116,4 +116,8 @@ tie_msg = """
 There was a tie in this round no one won this  time.
 The prize will go the next round and will be agrigated with the next round's prize
 """
-xplay_msg = "You aren't playing any game! Go to a group and create one"
+xplay_msg = "You aren't playing any game! Go to your favorite group and create one"
+nbid_msg = "Please specify the bid amount!!"
+xconb_msg = "You can't bid now! wait till this round is over!"
+xcard_msg = "You can't bid with that card you don't have it!"
+bids_msg = "Your bid has been recorded!!"

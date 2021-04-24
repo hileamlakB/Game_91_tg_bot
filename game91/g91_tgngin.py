@@ -109,13 +109,14 @@ class G91_tgingin:
             return False
 
         if bid_stat == None:
-            bot.send_message(user_id, "You can't bid now! wait till this round is over")
+            bot.send_message(user_id, xconb_msg)
             return False
 
         if bid_stat == []:
-            bot.send_message(user_id, "You can't bid with that card you don't have it")
+            bot.send_message(user_id, xcard_msg)
             return False
 
+        bot.send_message(user_id, bids_msg)
         return True
 
     def post_round(self, bot, group_id, game):
@@ -245,8 +246,12 @@ class G91_tgingin:
         """ Process bids from uses on private chat """
         bot = context.bot
         cmd = update.message.text.split(" ")
-
         user = update.effective_user
+
+        if len(cmd) < 2:
+            bot.send_message(user['id'], nbid_msg)
+            return
+
         if user.id not in context.bot_data:
             bot.send_message(user['id'], xplay_msg)
             return
