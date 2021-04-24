@@ -66,6 +66,8 @@ class ChatGenerator(PtbGenerator):
 
         """
         if cid and type == 'private':
+            #print(isinstance(cid, str), cid)
+            cid = int(cid)
             if cid < 0:
                 type = "group"
         if user:

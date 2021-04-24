@@ -513,7 +513,7 @@ class MessageGenerator(PtbGenerator):
         for _ in range(2):
             w, h = randint(40, 400), randint(40, 400)
             s = w * h * 0.3
-            tmp.append(PhotoSize(str(uuid.uuid4()), w, h, file_size=s))
+            tmp.append(PhotoSize(file_id = str(uuid.uuid4()), file_unique_id = str(uuid.uuid4()), width=w, height=h, file_size=s))
         return tmp
 
     def _get_location(self):
