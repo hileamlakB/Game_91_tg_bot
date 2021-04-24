@@ -4,6 +4,7 @@ This file containes all the messages used by the
 telegram game 91 engine
 """
 
+# if this messages are changed make sure the unittests are also changed since the depend on the messages t
 game_created =  """
 **********************************
  Game Created

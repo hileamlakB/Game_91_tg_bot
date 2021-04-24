@@ -148,7 +148,6 @@ class G91_tgingin:
         """
 
         chat_id = update.message.chat_id
-        print(update.message)
         bot = context.bot
 
         # check if no game object in this group before you
@@ -164,6 +163,7 @@ class G91_tgingin:
             pmin = Game_91.MIN_PLAYERS
             pmax = Game_91.MAX_PLAYERS
             bot.send_message(chat_id, game_created.format(game.id, pmin, pmax))
+
 
     def add_player(self, update: Update, context: CallbackContext) -> None:
         """
@@ -201,6 +201,7 @@ class G91_tgingin:
         if not curent_game.add_player(player):
             bot.send_message(chat_id, maxp_msg)
             return
+        bot.send_message(chat_id, f"{user.first_name} added!!")
 
         context.bot_data[user.id] = player
         if curent_game.is_ready():
@@ -219,7 +220,7 @@ class G91_tgingin:
 
         game_id = cmd[1]
         if game_id not in context.chat_data:
-             bot.send_message(chat_id, nstart_msg)
+             bot.send_message(chat_id, xgame_msg)
              return
 
         curent_game = context.chat_data[game_id]
@@ -235,10 +236,10 @@ class G91_tgingin:
                 curent_game.start()
                 bot.send_message(chat_id, started_msg)
                 self.req_bid(bot, chat_id, curent_game)
-
-
             else:
                 self.req_init(bot, chat_id, uusers)
+        else:
+            bot.send_message(chat_id, nstart_msg)
 
     def bid_card(self, update: Update, context: CallbackContext) -> None:
         """ Process bids from uses on private chat """
@@ -264,12 +265,9 @@ class G91_tgingin:
             bot.send_message(group_id, f"{curent_game.get_bids()}")
             # post round results in the end
             self.post_round(bot, group_id, curent_game)
-            print(curent_game.round)
             curent_game.next_round()
-            print(curent_game.round)
 
             if curent_game.is_complete():
-                print("is_complete")
                 self.post_final(bot, group_id, curent_game)
 
             else:
@@ -307,8 +305,8 @@ class G91_tgingin:
         engine functions. It will call the respective function according
         to the command"""
 
-        cmd = update.message.text.split(" ")[0]
         chat_type = update.message.chat.type
+        cmd = update.message.text.split(" ")[0]
 
         if cmd in self.cmd_map:
             if chat_type in self.cmd_map[cmd][0]:

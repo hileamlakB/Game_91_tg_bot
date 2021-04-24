@@ -100,7 +100,7 @@ class Game_91(CardGame):
         """
 
         if len(self.players) in range(Game_91.MIN_PLAYERS,
-                                      Game_91.MAX_PLAYERS):
+                                      Game_91.MAX_PLAYERS + 1):
             return True
         return False
 
@@ -175,7 +175,6 @@ class Game_91(CardGame):
         Checks if the game is complete by checking
         the number of  prize cards left.
         """
-        print("checing if complete")
         for player in self.players:
             if player.cards.ncards() != 0:
                return False
