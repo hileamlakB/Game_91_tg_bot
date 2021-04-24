@@ -202,6 +202,7 @@ class Test_STR(unittest.TestCase):
 
         # Create a group chat and idividual chats with the two user for chat simulation
         self.gchat = self.cg.get_chat(type="supergroup", title="game_91_test_bot", username="g91bot_tester")
+        self.u2chat = self.cg.get_chat(user=self.u2)
 
     def setUp(self):
         self.updater.start_polling()
@@ -242,7 +243,6 @@ class Test_STR(unittest.TestCase):
 
         game_id = re.findall("Game Id: \w{4}", crt_recieved)[0][-4:]
 
-
         add_update = self.mg.get_message(text=f"!ADD {game_id}", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(add_update)
 
@@ -274,8 +274,11 @@ class Test_STR(unittest.TestCase):
         #[print(m) for m in self.bot.sent_messages]
         self.assertEqual(self.bot.sent_messages[-1]['text'], xgame_msg)
 
+    @unittest.skip("No feature on the test suit to test this")
     def test_start_game_not_init(self):
         """Tests if the start functinoality of the game eninge works well
+	#this currently couldn't be tested due to the lack of such feature
+	in the ptbtest liberary
         """
 
         crt_update = self.mg.get_message(text="!CRT", chat=self.gchat, user=self.u1)
@@ -294,3 +297,261 @@ class Test_STR(unittest.TestCase):
 
         [print(m) for m in self.bot.sent_messages]
         #self.assertEqual(self.bot.sent_messages[-1]['text'], f'Player {user["first_name"]} hasn\'t initialized the bot\n')
+
+    def test_start_game(self):
+        """Tests if the start functinoality of the game eninge works well
+        """
+
+        crt_update = self.mg.get_message(text="!CRT", chat=self.gchat, user=self.u1)
+        self.bot.insertUpdate(crt_update)
+        crt_recieved = self.bot.sent_messages[0]['text']
+        self.assertRegex(crt_recieved, "Game Id: \w{4}")
+
+        game_id = re.findall("Game Id: \w{4}", crt_recieved)[0][-4:]
+
+        for user in self.users:
+            add_update = self.mg.get_message(text=f"!ADD {game_id}", chat=self.gchat, user=user)
+            self.bot.insertUpdate(add_update)
+
+        str_update = self.mg.get_message(text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
+        self.bot.insertUpdate(str_update)
+
+        #[print(m) for m in self.bot.sent_messages]
+
+        self.assertEqual(self.bot.sent_messages[-1]['text'], "Make your round 1 bids!!")
+
+
+class Test_BID(unittest.TestCase):
+    """ Test the bid funcinality of the game engine object"""
+
+    def __init__(self, *args, **kwargs):
+
+        super(Test_BID, self).__init__(*args, **kwargs)
+
+         # Prepare the basic mock tools and handlers
+        self.bot = Mockbot()
+        self.ug = UserGenerator()
+        self.cg = ChatGenerator()
+        self.mg = MessageGenerator()
+        self.updater = Updater(bot=self.bot)
+        self.dispatcher = self.updater.dispatcher
+
+        # create the engine to be tested
+        self.engin = G91_tgingin()
+
+        # Add the G91_tgngin's engin method as the message handler
+        self.dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, self.engin.engine))
+
+        # add a context
+        self.context = CallbackContext(self.dispatcher)
+
+        # Create two user for simulating users
+        self.users = [self.ug.get_user(is_bot=False) for _ in range(Game_91.MAX_PLAYERS)]
+        self.u1 = self.ug.get_user(first_name="User", last_name="1", is_bot=False)
+        self.u2 = self.ug.get_user(first_name="User", last_name="2", is_bot=False)
+
+        # Create a group chat and idividual chats with the two user for chat simulation
+        self.gchat = self.cg.get_chat(type="supergroup", title="game_91_test_bot", username="g91bot_tester")
+        self.u2chat = self.cg.get_chat(user=self.u2)
+
+    def setUp(self):
+        self.updater.start_polling()
+
+    def tearDown(self):
+        self.updater.stop()
+
+    def test_bid_no_value(self):
+        """Tests if the start functinoality of the game eninge works well
+        """
+
+        crt_update = self.mg.get_message(text="!CRT", chat=self.gchat, user=self.u1)
+        self.bot.insertUpdate(crt_update)
+        crt_recieved = self.bot.sent_messages[0]['text']
+        self.assertRegex(crt_recieved, "Game Id: \w{4}")
+
+        game_id = re.findall("Game Id: \w{4}", crt_recieved)[0][-4:]
+
+        for user in self.users:
+            add_update = self.mg.get_message(text=f"!ADD {game_id}", chat=self.gchat, user=user)
+            self.bot.insertUpdate(add_update)
+
+        str_update = self.mg.get_message(text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
+        self.bot.insertUpdate(str_update)
+
+        bid_update = self.mg.get_message(text="!BID", user=self.users[0])
+        #[print(m) for m in self.bot.sent_messages]
+        self.bot.insertUpdate(bid_update)
+        #print(self.bot.sent_messages[-1])
+
+        self.assertEqual(self.bot.sent_messages[-1]['text'], nbid_msg)
+
+    def test_bid_rong_player(self):
+        """Tests if bid functionality of the game properly handles 
+        wrong players
+        """
+
+        crt_update = self.mg.get_message(text="!CRT", chat=self.gchat, user=self.u1)
+        self.bot.insertUpdate(crt_update)
+        crt_recieved = self.bot.sent_messages[0]['text']
+        self.assertRegex(crt_recieved, "Game Id: \w{4}")
+
+        game_id = re.findall("Game Id: \w{4}", crt_recieved)[0][-4:]
+
+        for user in self.users:
+            add_update = self.mg.get_message(text=f"!ADD {game_id}", chat=self.gchat, user=user)
+            self.bot.insertUpdate(add_update)
+
+        str_update = self.mg.get_message(text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
+        self.bot.insertUpdate(str_update)
+
+        bid_update = self.mg.get_message(text="!BID 3", user=self.u2)# u2 isn't part of the game
+        #[print(m) for m in self.bot.sent_messages]
+        self.bot.insertUpdate(bid_update)
+        #print(self.bot.sent_messages[-1])
+
+        self.assertEqual(self.bot.sent_messages[-1]['text'], xplay_msg)
+
+    def test_bid_rong_type(self):
+        """Tests if bid commad is used with the wrong kind of value
+        """
+
+        crt_update = self.mg.get_message(text="!CRT", chat=self.gchat, user=self.u1)
+        self.bot.insertUpdate(crt_update)
+        crt_recieved = self.bot.sent_messages[0]['text']
+        self.assertRegex(crt_recieved, "Game Id: \w{4}")
+
+        game_id = re.findall("Game Id: \w{4}", crt_recieved)[0][-4:]
+
+        for user in self.users:
+            add_update = self.mg.get_message(text=f"!ADD {game_id}", chat=self.gchat, user=user)
+            self.bot.insertUpdate(add_update)
+
+        str_update = self.mg.get_message(text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
+        self.bot.insertUpdate(str_update)
+
+        bid_update = self.mg.get_message(text="!BID o", user=self.users[0])
+
+        self.bot.insertUpdate(bid_update)
+        #print(self.bot.sent_messages[-1])
+
+        self.assertEqual(self.bot.sent_messages[-1]['text'], "Use a proper card value")
+
+
+    def test_bid(self):
+        """Tests if bid commad works for the correct case
+        """
+
+        crt_update = self.mg.get_message(text="!CRT", chat=self.gchat, user=self.u1)
+        self.bot.insertUpdate(crt_update)
+        crt_recieved = self.bot.sent_messages[0]['text']
+        self.assertRegex(crt_recieved, "Game Id: \w{4}")
+
+        game_id = re.findall("Game Id: \w{4}", crt_recieved)[0][-4:]
+
+        for user in self.users:
+            add_update = self.mg.get_message(text=f"!ADD {game_id}", chat=self.gchat, user=user)
+            self.bot.insertUpdate(add_update)
+
+        str_update = self.mg.get_message(text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
+        self.bot.insertUpdate(str_update)
+
+        bid_update = self.mg.get_message(text="!BID 3", user=self.users[0])
+
+        self.bot.insertUpdate(bid_update)
+        #print(self.bot.sent_messages[-1])
+
+        self.assertEqual(self.bot.sent_messages[-1]['text'], bids_msg)
+
+    def test_con_bid(self):
+        """Tests if bid commad works when some one uses it
+        consequitevly in one round
+        """
+
+        crt_update = self.mg.get_message(text="!CRT", chat=self.gchat, user=self.u1)
+        self.bot.insertUpdate(crt_update)
+        crt_recieved = self.bot.sent_messages[0]['text']
+        self.assertRegex(crt_recieved, "Game Id: \w{4}")
+
+        game_id = re.findall("Game Id: \w{4}", crt_recieved)[0][-4:]
+
+        for user in self.users:
+            add_update = self.mg.get_message(text=f"!ADD {game_id}", chat=self.gchat, user=user)
+            self.bot.insertUpdate(add_update)
+
+        str_update = self.mg.get_message(text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
+        self.bot.insertUpdate(str_update)
+
+        bid_update = self.mg.get_message(text="!BID 3", user=self.users[0])
+        self.bot.insertUpdate(bid_update)
+        #print(self.bot.sent_messages[-1])
+
+        bid_update = self.mg.get_message(text="!BID 2", user=self.users[0])
+        self.bot.insertUpdate(bid_update)
+        
+        self.assertEqual(self.bot.sent_messages[-1]['text'], xconb_msg)
+
+    def test_next_round(self):
+        """Tests if it moves to the next round once
+        everyone finishes bidding
+        """
+
+        crt_update = self.mg.get_message(text="!CRT", chat=self.gchat, user=self.u1)
+        self.bot.insertUpdate(crt_update)
+        crt_recieved = self.bot.sent_messages[0]['text']
+        self.assertRegex(crt_recieved, "Game Id: \w{4}")
+
+        game_id = re.findall("Game Id: \w{4}", crt_recieved)[0][-4:]
+
+        for user in self.users:
+            add_update = self.mg.get_message(text=f"!ADD {game_id}", chat=self.gchat, user=user)
+            self.bot.insertUpdate(add_update)
+
+        str_update = self.mg.get_message(text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
+        self.bot.insertUpdate(str_update)
+
+        for user in self.users:
+            bid_update =  self.mg.get_message(text="!BID 3", user=user) 
+            self.bot.insertUpdate(bid_update)
+
+        self.assertEqual(self.bot.sent_messages[-1]['text'], bid_msg.format(2))
+        self.assertTrue(self.bot.sent_messages[-2 - len(self.users)]['photo'] != '')
+
+        # the next asserts are a bit tricky since there could be unexcpected amount of messages thanks to 
+        # ties
+        #self.assertEqual(self.bot.sent_messages[-3 - len(self.users)]['text'], "Here are round 1 prizes")
+        #self.assertEqual(self.bot.sent_messages[-4 - len(self.users)]['text'], tie_msg)
+        #self.assertEqual(self.bot.sent_messages[-5]['text'], ) #  check if round score board is printed
+        #also check if final score board is pritned as another test
+        # this commented blocks are areas for more testing, do it tomorroe
+
+    def test_bid_rong_card(self):
+        """Tests if using a card twine for biding 
+        is handled
+        """
+
+        crt_update = self.mg.get_message(text="!CRT", chat=self.gchat, user=self.u1)
+        self.bot.insertUpdate(crt_update)
+        crt_recieved = self.bot.sent_messages[0]['text']
+        self.assertRegex(crt_recieved, "Game Id: \w{4}")
+
+        game_id = re.findall("Game Id: \w{4}", crt_recieved)[0][-4:]
+
+        for user in self.users:
+            add_update = self.mg.get_message(text=f"!ADD {game_id}", chat=self.gchat, user=user)
+            self.bot.insertUpdate(add_update)
+
+        str_update = self.mg.get_message(text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
+        self.bot.insertUpdate(str_update)
+
+        for user in self.users:
+            bid_update =  self.mg.get_message(text="!BID 3", user=user) 
+            self.bot.insertUpdate(bid_update)
+
+        bid_update = self.mg.get_message(text="!BID 3", user=self.users[0])
+        self.bot.insertUpdate(bid_update)
+        #print(self.bot.sent_messages[-1])
+        
+        self.assertEqual(self.bot.sent_messages[-1]['text'], xcard_msg)
+
+if __name__ == "__main__":
+    unittest.main()
