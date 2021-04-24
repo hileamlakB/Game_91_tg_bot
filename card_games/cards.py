@@ -94,8 +94,6 @@ class Cards:
         """
         Returns the number of cards in the list
         """
-        print(sys._getframe(1).f_code.co_name)
-        print("@ncards", len(self.cards))
         return len(self.cards)
 
     def isin(self, card):
