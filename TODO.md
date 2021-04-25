@@ -5,14 +5,18 @@
 -   [x] version 0.499 => Refactor and restructure folder
 -   [x] Version 0.5 => Image addition and UI improvement
 -   [x] Version 0.599 => Refactor to make atmost 30 lines per function
--   [ ] Version 0.6 => Write tests
--   [ ] Version 0.65 => Test scalability for multiple players
+-   [x] Version 0.6 => Write tests
+-   [x] Version 0.65 => Test scalability for multiple players
 -   [ ] Version 0.699 => Pylama linting and githubactions
+	- [ ] Pylama
+	- [ ] githubactions
 -   [x] version 0.7 => give different suits for different players
 -   [ ] Version 0.8 => Multi player mode both in different groups and in single groups
 -   [ ] Version 0.9 => Error checking, edge case handling, more test
--   [ ] Version 0.98 => group score board for compitation
+-   [ ] Version 0.98 => group score board for compitation(Telegram game bot)
 -   [ ] Version 0.99 => Complete the README.md
--   [ ] Version 1.0 => Final Clean up and tidying
+-   [ ] Version 0.9999 => Nice Congratulation message for the winner
+-   [ ] Version 1.0 => Final Clean up and tidying(Licenceing and proper creediting)
 -   [ ] Version 1.0 => First release
+-   [ ] Version 1.1 => Add test for all classes
 -   [ ] version 1.1 => Add keyboard layout as a secondary option
