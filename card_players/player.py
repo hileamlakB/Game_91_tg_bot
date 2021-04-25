@@ -58,6 +58,8 @@ class Player:
             suit = self.cards.suit
 
         if self.can_bid:
+            # The remove command is also used to check if the card
+            # is an actual card
             removed = self.cards.remove([suit, bid])
             if removed:
                 self.bids.append(removed)
@@ -72,16 +74,21 @@ class Player:
         """
         self.won.append(card)
 
-    def calculate_total(self):
+    def calculate_total(self, mapper):
         """
         Calculates the total won points using
         the self.won list
+
+        @mapper - is the card value map dictionary that is
+                being used for the specific game
+                eg. {'A':1, 2:2,...}
 
         Returns the total point of the cards won
         """
 
         self.total_points = 0
         for card in self.won:
-            self.total_points += int(card[1])
+
+            self.total_points += mapper[card[1]]
 
         return self.total_points

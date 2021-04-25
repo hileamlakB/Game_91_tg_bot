@@ -17,14 +17,19 @@ class Game_91(CardGame):
     the pdf file in this repository.
 
     Attributes
+    @ID_LENGTH - the lengths of the game ids
     @MAX_PLAYERS - the maximum number of players
                  that could take part in the game
     @MIN_PLAYERS - the minimum number of players
                  that could take part in the game
+    @CARD_VALUES_MAP - a dictionary that holds the
+                     respectice values of each card
     """
 
-    MAX_PLAYERS = 3
+    ID_LENGTH = 4
+    MAX_PLAYERS = 7
     MIN_PLAYERS = 2
+    CARD_VALUES_MAP = {**{x : x for x in range(2, 11)}, **{'A':1, 'J':11, 'Q':12, 'K':13}}
 
     def __init__(self):
         """
@@ -45,12 +50,13 @@ class Game_91(CardGame):
                      as a prize
         @current_prize - a new prize withdrawen from the prize_cards
                       after every round. in case of tie there could
-                      be more than one in the round next to the tie
+                test_bid_chars      be more than one in the round next to the tie
                       other wise it is similar to the current prize
         @bids - is the list of bids made and also the details  about
               the bid including the bidder in a key-value pair
         """
-        self.id = str(uuid.uuid4())[:4]
+
+        self.id = str(uuid.uuid4())[:Game_91.ID_LENGTH]
         self.players = []
         self.game_stat = False
         self.is_started = False
@@ -116,9 +122,9 @@ class Game_91(CardGame):
         if not self.is_started:
             self.is_started = True
             self.round = 1
-            self.prize_cards = Cards(CLUB="ALL")
+            self.prize_cards = Cards(DIAMOND="ALL")
             self.current_prize = [self.prize_cards.get_random()]
-            self.prize_cards.set_suit("CLUB")
+            self.prize_cards.set_suit("DIAMOND")
 
     def add_bid(self, player: Player, bid: int):
         """
@@ -158,23 +164,26 @@ class Game_91(CardGame):
         current round is complete. And give back all
         the players their ability to bid again.
 
-        Returns True if the bid was successful and
+        Returns True if that was successful and
         False if it isn't.
+
+        After this tthe engine can make a new request tto
+        player to bid fr the next round
         """
 
         if self.is_round_complete():
             self.round += 1
             for player in self.players:
                 player.can_bid = True
-            #self.current_prize = self.prize_cards.get_random()
             return True
         return False
 
     def is_complete(self):
         """
         Checks if the game is complete by checking
-        the number of  prize cards left.
+        the number of  cards all the players have.
         """
+
         for player in self.players:
             if player.cards.ncards() != 0:
                return False
@@ -216,8 +225,11 @@ class Game_91(CardGame):
         # choose the maximum bid of this round
         for bid in self.bids[f"{self.round}"]:
             for player, value in bid.items():
+                value = Game_91.CARD_VALUES_MAP[value]
                 if value > max_bid[1]:
                     max_bid = [player, value]
+
+
 
         # check if there is tie by counting the number of maximum bids
         all_bids = []
@@ -249,7 +261,7 @@ class Game_91(CardGame):
         p_totals = {}
         if self.is_complete():
             for player in self.players:
-                total = player.calculate_total()
+                total = player.calculate_total(Game_91.CARD_VALUES_MAP)
                 if total not in p_totals:
                     p_totals[total] = [player]
                 else:

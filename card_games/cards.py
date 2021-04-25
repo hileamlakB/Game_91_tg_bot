@@ -12,8 +12,8 @@ import sys
 class Cards:
     """ A class to manipulate playing cards """
 
-    #CARD_VALUES = list(range(2, 11)) + ['A', 'J', 'Q', 'K']
-    CARD_VALUES = list(range(2, 4))
+
+    CARD_VALUES = list(range(2, 11)) + ['A', 'J', 'Q', 'K']
     SUIT_OPTIONS = ["CLUB", "DIAMOND", "SPADE", "FLOWER"]
 
     def __init__(self, *args, **kwargs):
@@ -29,7 +29,7 @@ class Cards:
         for that suit.
         example:
               * Cards(CLUB=ALL)
-              * Cards(CLUB=[1,2,3,4])
+              * Cards(CLUB=['A',2,3,4])
 
         It could also accept a list of cards as part of the args.
         Example:
@@ -43,8 +43,10 @@ class Cards:
             if suit in Cards.SUIT_OPTIONS:
                 if value == "ALL":
                     self.cards += [[suit, x] for x in Cards.CARD_VALUES]
-                elif type(value) is str:
-                    self.cards +=[[suit, x] for x in value]
+                elif type(value) in [list, str]:
+                    self.cards +=[[suit, x] for x in value if Cards.isCard([suit, x])]
+
+
         for card in args:
             if Cards.isCard(card):
                 if card not in self.cards:

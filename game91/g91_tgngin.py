@@ -18,6 +18,7 @@ class G91_tgingin:
     to run the game on a telegram bot
     """
 
+
     def __init__(self) -> None:
         """
         Creates an instance of a telegram game91
@@ -37,6 +38,7 @@ class G91_tgingin:
 
         self.SUIT_OPTIONS = ["CLUB", "DIAMOND", "SPADE", "FLOWER"]
         self.current_option = 0
+
 
     def next_suit(self):
         """
@@ -105,8 +107,11 @@ class G91_tgingin:
         try:
             bid_stat = game.add_bid(player, int(bid))
         except ValueError:
-            bot.send_message(user_id, "Use a proper card value")
-            return False
+            import re
+            if not len(re.findall(r"^(a|j|q|k)$", bid, re.IGNORECASE)):
+                bot.send_message(user_id, "Use a proper card value")
+                return False
+            bid_stat = game.add_bid(player, bid.upper())
 
         if bid_stat == None:
             bot.send_message(user_id, xconb_msg)
@@ -131,7 +136,7 @@ class G91_tgingin:
         bot.send_message(group_id, tie_msg)
 
     def post_final(self, bot, group_id, game):
-        """Poss the fnial message one the game is over"""
+        """Post the fnial message one the game is over"""
         f_winner = game.final_winner()
         if len(f_winner) == 1:
             bot.send_message(group_id, win_msg.format(f_winner[0].name, f_winner[0].total_points))
