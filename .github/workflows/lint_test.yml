@@ -40,10 +40,7 @@ jobs:
           git commit -m "Fixed style with autopep8" -a
 
       - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+        run: git push 
   test:
     runs-on: ubuntu-latest
 
