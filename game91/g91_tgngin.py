@@ -61,7 +61,7 @@ class G91_tgingin:
         prizes = game.current_prize
         for prize in prizes:
             iname = str(prize[1]) + prize[0][0] + ".png"
-            with open("./data/card_images/"+iname, 'rb') as im:
+            with open("./data/card_images/" + iname, 'rb') as im:
                 bot.send_photo(group_id, photo=im.read(),
                                caption=f"The {prize[1]} of {prize[0]} \
                                    is up for a bid")
@@ -290,7 +290,7 @@ class G91_tgingin:
 
             self.clean_up(update, context)
 
-    def clean_up(self,  update: Update, context: CallbackContext) -> None:
+    def clean_up(self, update: Update, context: CallbackContext) -> None:
         """
             Cleans up data releated to a specific game
         """
@@ -314,7 +314,7 @@ class G91_tgingin:
 
         bot.send_message(chat_id, cmd_msg)
 
-    def engine(self,  update: Update, context: CallbackContext) -> None:
+    def engine(self, update: Update, context: CallbackContext) -> None:
         """
         This is the function that should ideally be used to call
         engine functions. It will call the respective function according
