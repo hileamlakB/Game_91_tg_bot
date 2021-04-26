@@ -21,12 +21,13 @@
 """This module provides a class to generate telegram callback queries"""
 import uuid
 
-from .updategenerator import update
-from .ptbgenerator import PtbGenerator
-from ptbtest import (ChatGenerator, MessageGenerator, Mockbot, UserGenerator)
+from ptbtest import ChatGenerator, MessageGenerator, Mockbot, UserGenerator
 from ptbtest.errors import (BadBotException, BadCallbackQueryException,
                             BadMessageException, BadUserException)
-from telegram import (CallbackQuery, Message, User)
+from telegram import CallbackQuery, Message, User
+
+from .ptbgenerator import PtbGenerator
+from .updategenerator import update
 
 
 class CallbackQueryGenerator(PtbGenerator):

@@ -19,18 +19,15 @@
 # You should have received a copy of the GNU Lesser Public License
 # along with this program.  If not, see [http://www.gnu.org/licenses/].
 
+from .callbackquerygenerator import CallbackQueryGenerator
+from .chatgenerator import ChatGenerator
+from .errors import (BadBotException, BadCallbackQueryException,
+                     BadChatException, BadMarkupException, BadMessageException,
+                     BadUserException)
+from .inlinequerygenerator import InlineQueryGenerator
+from .messagegenerator import MessageGenerator
 from .mockbot import Mockbot
 from .usergenerator import UserGenerator
-from .chatgenerator import ChatGenerator
-from .messagegenerator import MessageGenerator
-from .callbackquerygenerator import CallbackQueryGenerator
-from .inlinequerygenerator import InlineQueryGenerator
-from .errors import BadUserException
-from .errors import BadChatException
-from .errors import BadMessageException
-from .errors import BadBotException
-from .errors import BadMarkupException
-from .errors import BadCallbackQueryException
 
 __all__ = [
     "BadUserException", "BadChatException", "BadMessageException",

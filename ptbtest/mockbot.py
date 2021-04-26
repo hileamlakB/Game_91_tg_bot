@@ -20,14 +20,13 @@
 # along with this program.  If not, see [http://www.gnu.org/licenses/].
 """This module provides a class for a Mockbot"""
 
+import datetime
 import functools
 import logging
+import time
 import warnings
 
-import time
-
-import datetime
-from telegram import (User, ReplyMarkup, TelegramObject)
+from telegram import ReplyMarkup, TelegramObject, User
 from telegram.error import TelegramError
 
 logging.getLogger(__name__).addHandler(logging.NullHandler())
