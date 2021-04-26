@@ -37,8 +37,10 @@ jobs:
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git commit -m "Fixed style with autopep8" 
-          git push origin main
+          git commit -a -m "Fixed style with autopep8"
+          git fetch
+          diffs=$(git diff)
+          if [[ -n "$diffs" ]]; then; git push origin HEAD; fi
   test:
     runs-on: ubuntu-latest
 
