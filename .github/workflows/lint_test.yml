@@ -28,19 +28,17 @@ jobs:
           # Version range or exact version of a Python version to use, using SemVer's version range syntax.
           python-version: 3.8
 
-      - name: autopep8
-        # You may pin to the exact commit or the version.
-        # uses: peter-evans/autopep8@1ba8b3249d3cf04922eecd66fc6a024072f4a7b0
-        uses: peter-evans/autopep8@v1.2.1
-        with:
-          # Arguments to pass to autopep8
-          args: --recursive --in-place --aggressive --aggressive --exclude ptbtest .
+      - name: install autopep8
+        run: |
+          python3.8 -m pip install autopep8
+          autopep8 --recursive --in-place --aggressive --aggressive --exclude ptbtest .
 
       - name: Commit files
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git commit -m "Run autopep8" -a
+          git commit -m "Fixed style with autopep8" -a
+
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
