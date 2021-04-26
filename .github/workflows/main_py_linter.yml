@@ -36,15 +36,16 @@ jobs:
           # Arguments to pass to autopep8
           args: --recursive --in-place --aggressive --aggressive --exclude ptbtest . 
 
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v3
+      - name: Commit files
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "Run autopep8" -a
+      - name: Push changes
+        uses: ad-m/github-push-action@master
         with:
-          commit-message: autopep8 action fixes
-          title: Fixes by autopep8 action
-          body: This is an auto-generated PR with fixes by autopep8.
-          labels: autopep8, automated pr
-          reviewers: hileamlakb  
-          branch: main            
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}          
   test:
     runs-on: ubuntu-latest
 
@@ -59,7 +60,6 @@ jobs:
           # Version range or exact version of a Python version to use, using SemVer's version range syntax.
           python-version: 3.8    
   
-      - name: Run unit test
-        run: python3.8 -m unittest discover tests/
+
   
 
