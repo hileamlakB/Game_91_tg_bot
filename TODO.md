@@ -8,7 +8,7 @@
 -   [x] Version 0.6 => Write tests
 -   [x] Version 0.65 => Test scalability for multiple players
 -   [ ] Version 0.699 => Pylama linting and githubactions
-	- [ ] Pylama
+	- [x] Pylama
 	- [ ] githubactions
 -   [x] version 0.7 => give different suits for different players
 -   [ ] Version 0.8 => Multi player mode both in different groups and in single groups
