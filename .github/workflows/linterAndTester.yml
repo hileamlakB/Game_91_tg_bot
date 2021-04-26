@@ -1,6 +1,6 @@
-name: py-linter 
+name: py-linter
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  
+
   lint:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
@@ -26,7 +26,7 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           # Version range or exact version of a Python version to use, using SemVer's version range syntax.
-          python-version: 3.8    
+          python-version: 3.8
 
       - name: autopep8
         # You may pin to the exact commit or the version.
@@ -34,7 +34,7 @@ jobs:
         uses: peter-evans/autopep8@v1.2.1
         with:
           # Arguments to pass to autopep8
-          args: --recursive --in-place --aggressive --aggressive --exclude ptbtest . 
+          args: --recursive --in-place --aggressive --aggressive --exclude ptbtest .
 
       - name: Commit files
         run: |
@@ -45,7 +45,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}          
+          branch: ${{ github.ref }}
   test:
     runs-on: ubuntu-latest
 
@@ -58,8 +58,13 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           # Version range or exact version of a Python version to use, using SemVer's version range syntax.
-          python-version: 3.8    
-  
+          python-version: 3.8
 
-  
+      - name: test
+          run: |
+          python3.8 -m pip install -r requirments.txt
+          python3.8 -m unittest discover tests/
+
+
+
 
