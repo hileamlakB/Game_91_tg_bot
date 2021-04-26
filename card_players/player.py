@@ -3,6 +3,7 @@
 Defines a card game player object
 """
 import uuid
+
 from card_games.cards import Cards
 
 
@@ -51,7 +52,8 @@ class Player:
 
         Returns the bid card on success
         None if the plyaer can't bid in this round
-        or an empty list if it the player is bidding with a card they don't have
+        or an empty list if it the player is bidding with a car
+        they don't have
         """
 
         if not suit:

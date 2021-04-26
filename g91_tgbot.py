@@ -3,11 +3,11 @@
 This script will start the telegram bot
 that facilitates the game play of game-91
 """
-from game91.g91_tgngin import G91_tgingin
 import logging
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
-from game91.tg_basic import start, help_command
 
+from game91.g91_tgngin import G91_tgingin
+from game91.tg_basic import help_command, start
+from telegram.ext import CommandHandler, Filters, MessageHandler, Updater
 
 # Enable logging
 log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'

@@ -5,9 +5,10 @@ Mostly the games are card games
 that are ideal for math camps
 """
 import uuid
+
+from card_games.cardgame import CardGame
 from card_games.cards import Cards
 from card_players.player import Player
-from card_games.cardgame import CardGame
 
 
 class Game_91(CardGame):
@@ -29,7 +30,8 @@ class Game_91(CardGame):
     ID_LENGTH = 4
     MAX_PLAYERS = 7
     MIN_PLAYERS = 2
-    CARD_VALUES_MAP = {**{x : x for x in range(2, 11)}, **{'A':1, 'J':11, 'Q':12, 'K':13}}
+    CARD_VALUES_MAP = {**{x: x for x in range(2, 11)},
+                       **{'A': 1, 'J': 11, 'Q': 12, 'K': 13}}
 
     def __init__(self):
         """
@@ -49,9 +51,9 @@ class Game_91(CardGame):
         @prize_cards - a list of cards that are to be presented
                      as a prize
         @current_prize - a new prize withdrawen from the prize_cards
-                      after every round. in case of tie there could
-                test_bid_chars      be more than one in the round next to the tie
-                      other wise it is similar to the current prize
+                    after every round. in case of tie there could
+                    test_bid_chars be more than one in the round next
+                    to the tie other wise it is similar to the current prize
         @bids - is the list of bids made and also the details  about
               the bid including the bidder in a key-value pair
         """
@@ -186,7 +188,7 @@ class Game_91(CardGame):
 
         for player in self.players:
             if player.cards.ncards() != 0:
-               return False
+                return False
         return True
 
     def get_bids(self):
@@ -224,20 +226,18 @@ class Game_91(CardGame):
 
         # choose the maximum bid of this round
         for bid in self.bids[f"{self.round}"]:
-            for player, value in bid.items():
-                value = Game_91.CARD_VALUES_MAP[value]
-                if value > max_bid[1]:
-                    max_bid = [player, value]
-
-
+            player, value = list(bid.items())[0]
+            value = Game_91.CARD_VALUES_MAP[value]
+            if value > max_bid[1]:
+                max_bid = [player, value]
 
         # check if there is tie by counting the number of maximum bids
         all_bids = []
         for bid in self.bids[f"{self.round}"]:
             all_bids += [value for _, value in bid.items()]
-        if all_bids.count(max_bid[1]) != 1:  #check if there is a repeated maximum
+        # check if there is a repeated maximum
+        if all_bids.count(max_bid[1]) != 1:
             max_bid = [None, 0]
-
 
         if max_bid[0]:
             # add the won card to the  bidders cards
@@ -245,10 +245,9 @@ class Game_91(CardGame):
                 max_bid[0].add_won(card)
             if self.prize_cards.ncards() != 0:
                 self.current_prize = [self.prize_cards.get_random()]
-        else: # the case of a tie
+        else:  # the case of a tie
             if self.prize_cards.ncards() != 0:
                 self.current_prize += [self.prize_cards.get_random()]
-
 
         return max_bid
 
@@ -269,9 +268,7 @@ class Game_91(CardGame):
                 if total > w_score:
                     w_score = total
 
-
         return p_totals[w_score]
-
 
     def get_prize(self):
         """

@@ -3,21 +3,23 @@
 This file defines a telegram game engine for
 the game 91 card game
 """
-
+from card_players.player import Player
 from telegram import Update
-from telegram.ext import  CallbackContext
 from telegram.error import Unauthorized
+from telegram.ext import CallbackContext
 
 from .g91 import Game_91
-from .g91_msgs import *
-from card_players.player import Player
+from .g91_msgs import (bid_msg, bids_msg, cmd_msg, game_created, init_msg,
+                       ins_msg, maxp_msg, nbid_msg, noid_msg, nstart_msg,
+                       ready_msg, started_msg, tie_msg, win_msg, xaddp_msg,
+                       xcard_msg, xconb_msg, xgame_msg, xplay_msg, xuser_msg)
+
 
 class G91_tgingin:
     """
     A game_91 card game engine
     to run the game on a telegram bot
     """
-
 
     def __init__(self) -> None:
         """
@@ -28,17 +30,16 @@ class G91_tgingin:
         # format
         # {COMAND: [[CHAT_TYPE, . . .], CALLBACK_FUNCTION]}
         self.cmd_map = {
-        "!CRT" : [["group", "supergroup"], self.create_game],
-        "!ADD" : [["group", "supergroup"], self.add_player],
-        "!STR" : [["group", "supergroup"], self.start_game],
-        "!BID" : [["private", "supergroup"], self.bid_card],
-        "!INS" : [["group", "private", "supergroup"], self.show_ins],
-        "!CMD" : [["group", "private", "supergroup"], self.show_cmd],
+            "!CRT": [["group", "supergroup"], self.create_game],
+            "!ADD": [["group", "supergroup"], self.add_player],
+            "!STR": [["group", "supergroup"], self.start_game],
+            "!BID": [["private", "supergroup"], self.bid_card],
+            "!INS": [["group", "private", "supergroup"], self.show_ins],
+            "!CMD": [["group", "private", "supergroup"], self.show_cmd],
         }
 
         self.SUIT_OPTIONS = ["CLUB", "DIAMOND", "SPADE", "FLOWER"]
         self.current_option = 0
-
 
     def next_suit(self):
         """
@@ -61,7 +62,9 @@ class G91_tgingin:
         for prize in prizes:
             iname = str(prize[1]) + prize[0][0] + ".png"
             with open("./data/card_images/"+iname, 'rb') as im:
-                bot.send_photo(group_id, photo=im.read(), caption=f"The {prize[1]} of {prize[0]} is up for a bid" )
+                bot.send_photo(group_id, photo=im.read(),
+                               caption=f"The {prize[1]} of {prize[0]} \
+                                   is up for a bid")
         bot.send_message(group_id, bid_msg.format(game.round))
 
         for player in game.get_players():
@@ -73,7 +76,8 @@ class G91_tgingin:
         Checks if bot messaging is initialized with all players
         returns a list of all the players that haven't initialized bot chat.
         TODO
-        See if there is a better way to check autherization without sening messages
+        See if there is a better way to check autherization without sending
+        messages
         """
         uusers = []
 
@@ -113,7 +117,7 @@ class G91_tgingin:
                 return False
             bid_stat = game.add_bid(player, bid.upper())
 
-        if bid_stat == None:
+        if bid_stat is None:
             bot.send_message(user_id, xconb_msg)
             return False
 
@@ -129,7 +133,7 @@ class G91_tgingin:
         Posts round end information, including who won the round
         """
         winner = game.handle_winner()
-        if winner[0] != None:
+        if winner[0] is not None:
             bot.send_message(group_id, f"{winner[0].name} won this round")
             return
 
@@ -139,7 +143,9 @@ class G91_tgingin:
         """Post the fnial message one the game is over"""
         f_winner = game.final_winner()
         if len(f_winner) == 1:
-            bot.send_message(group_id, win_msg.format(f_winner[0].name, f_winner[0].total_points))
+            bot.send_message(group_id,
+                             win_msg.format(f_winner[0].name,
+                                            f_winner[0].total_points))
             return
 
         w_msg = "No one won!! There was a tie between "
@@ -169,7 +175,6 @@ class G91_tgingin:
             pmin = Game_91.MIN_PLAYERS
             pmax = Game_91.MAX_PLAYERS
             bot.send_message(chat_id, game_created.format(game.id, pmin, pmax))
-
 
     def add_player(self, update: Update, context: CallbackContext) -> None:
         """
@@ -226,8 +231,8 @@ class G91_tgingin:
 
         game_id = cmd[1]
         if game_id not in context.chat_data:
-             bot.send_message(chat_id, xgame_msg)
-             return
+            bot.send_message(chat_id, xgame_msg)
+            return
 
         curent_game = context.chat_data[game_id]
         if curent_game.is_started:

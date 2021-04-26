@@ -6,12 +6,10 @@
    the vale and the suit
 """
 import random
-import sys
 
 
 class Cards:
     """ A class to manipulate playing cards """
-
 
     CARD_VALUES = list(range(2, 11)) + ['A', 'J', 'Q', 'K']
     SUIT_OPTIONS = ["CLUB", "DIAMOND", "SPADE", "FLOWER"]
@@ -36,7 +34,7 @@ class Cards:
              * Cards(["CLUB", 4], ["DIAMOND", 7])
         """
 
-        self.cards = [] # set would have been better if lists where hasable
+        self.cards = []  # set would have been better if lists where hasable
         self.suit = ""
 
         for suit, value in kwargs.items():
@@ -44,8 +42,8 @@ class Cards:
                 if value == "ALL":
                     self.cards += [[suit, x] for x in Cards.CARD_VALUES]
                 elif type(value) in [list, str]:
-                    self.cards +=[[suit, x] for x in value if Cards.isCard([suit, x])]
-
+                    self.cards += [[suit, x] for x in value
+                                   if Cards.isCard([suit, x])]
 
         for card in args:
             if Cards.isCard(card):
