@@ -39,7 +39,7 @@ jobs:
           git config --local user.name "github-actions[bot]"
           git commit -a -m "Fixed style with autopep8"
           git fetch
-          diffs=$(git diff)
+          diffs=$(git diff ${{ github.ref }} ${{ github.head_ref }})
           if [[ -n "$diffs" ]]; then; git push origin HEAD; fi
   test:
     runs-on: ubuntu-latest
