@@ -77,6 +77,23 @@ class CommonInit(unittest.TestCase):
     def tearDown(self):
         self.updater.stop()
 
+    def create(self, chat, user) -> str:
+        """
+        Sends the create command (!CRT) to a bot and returns
+        the response
+
+        !this function is excpected to be called ufter
+        updater.start_polling() and it is the callers
+        responsibilty run updater.stop() after the
+        call.
+        """
+
+        msg = self.mg.get_message(text="!CRT", chat=chat, user=user)
+        self.bot.insertUpdate(msg)
+
+        response = self.bot.sent_messages[-1]['text']
+        return response
+
 
 class Test_CRTnADD(CommonInit):
     """Tests the game telegram engines with 2 methods (CRT, ADD)"""
@@ -85,27 +102,17 @@ class Test_CRTnADD(CommonInit):
         """Tests the the create_game method of the
         tg_engine object"""
 
-        update = self.mg.get_message(
-            text="!CRT", chat=self.gchat, user=self.u1)
-        self.bot.insertUpdate(update)
-        recieved = self.bot.sent_messages[0]['text']
-
-        self.assertRegex(recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        response = self.create(chat=self.gchat, user=self.u1)
+        self.assertRegex(response, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
     def test_create_multi_chat(self):
         """Tests multiple game creation in the diferent group"""
 
-        update1 = self.mg.get_message(
-            text="!CRT", chat=self.gchat, user=self.u1)
-        self.bot.insertUpdate(update1)
-        recieved = self.bot.sent_messages[0]['text']
+        response = self.create(chat=self.gchat, user=self.u1)]
+        self.assertRegex(response, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
-        self.assertRegex(recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
-
-        update2 = self.mg.get_message(
-            text="!CRT", chat=self.gchat2, user=self.u2)
-        self.bot.insertUpdate(update2)
-        recieved = self.bot.sent_messages[0]['text']
+        response = self.create(chat=self.gchat2, user=self.u2)]
+        self.assertRegex(response, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         self.assertRegex(recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
