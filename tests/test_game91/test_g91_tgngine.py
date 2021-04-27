@@ -114,14 +114,16 @@ class Test_CRTnADD(CommonInit):
         response = self.create(chat=self.gchat2, user=self.u2)]
         self.assertRegex(response, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
-        self.assertRegex(recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         update3 = self.mg.get_message(
             text="!CRT", chat=self.gchat3, user=self.u1)
         self.bot.insertUpdate(update3)
         recieved = self.bot.sent_messages[0]['text']
 
-        self.assertRegex(recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
     def test_multi_create(self):
         """Tests multiple gae creation in the same group"""
@@ -133,8 +135,8 @@ class Test_CRTnADD(CommonInit):
             self.bot.insertUpdate(update)
             recieved = self.bot.sent_messages[-1]['text']
 
-            self.assertRegex(recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
-
+            self.assertRegex(recieved,
+                             r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
     def test_add_no_id(self):
         """Tests the add player functinoality when
@@ -143,7 +145,8 @@ class Test_CRTnADD(CommonInit):
                                          chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         add_update = self.mg.get_message(text="!ADD",
                                          chat=self.gchat, user=self.u1)
@@ -158,7 +161,8 @@ class Test_CRTnADD(CommonInit):
                                          chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         add_update = self.mg.get_message(text="!ADD rongopokol",
                                          chat=self.gchat, user=self.u1)
@@ -173,7 +177,8 @@ class Test_CRTnADD(CommonInit):
                                          chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
                              crt_recieved)[0][-Game_91.ID_LENGTH:]
@@ -191,7 +196,8 @@ class Test_CRTnADD(CommonInit):
                                          chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
                              crt_recieved)[0][-Game_91.ID_LENGTH:]
@@ -213,7 +219,8 @@ class Test_CRTnADD(CommonInit):
                                          chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
                              crt_recieved)[0][-Game_91.ID_LENGTH:]
@@ -237,7 +244,8 @@ class Test_CRTnADD(CommonInit):
                                          chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
                              crt_recieved)[0][-Game_91.ID_LENGTH:]
@@ -261,7 +269,7 @@ class Test_CRTnADD(CommonInit):
         crt_recieved = self.bot.sent_messages[0]['text']
 
         game_id1 = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
-                             crt_recieved)[-1][-Game_91.ID_LENGTH:]
+                              crt_recieved)[-1][-Game_91.ID_LENGTH:]
 
         crt_update = self.mg.get_message(text="!CRT",
                                          chat=self.gchat, user=self.u1)
@@ -269,20 +277,22 @@ class Test_CRTnADD(CommonInit):
         crt_recieved = self.bot.sent_messages[-1]['text']
 
         game_id2 = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
-                             crt_recieved)[0][-Game_91.ID_LENGTH:]
+                              crt_recieved)[0][-Game_91.ID_LENGTH:]
 
         for x in range(Game_91.MIN_PLAYERS - 1):
             user = self.ug.get_user(is_bot=False)
             add_update = self.mg.get_message(text=f"!ADD {game_id1}",
                                              chat=self.gchat, user=user)
             self.bot.insertUpdate(add_update)
-            self.assertRegex(self.bot.sent_messages[-1]["text"], f"{user.first_name} added!!")
+            self.assertRegex(
+                self.bot.sent_messages[-1]["text"], f"{user.first_name} added!!")
 
             add_update2 = self.mg.get_message(text=f"!ADD {game_id2}",
-                                             chat=self.gchat, user=user)
+                                              chat=self.gchat, user=user)
             self.bot.insertUpdate(add_update2)
 
-            self.assertRegex(self.bot.sent_messages[-1]["text"], f"{user.first_name} added!!")
+            self.assertRegex(
+                self.bot.sent_messages[-1]["text"], f"{user.first_name} added!!")
 
     def test_add_multi_chat(self):
         """Tests multiple game creation in the diferent group"""
@@ -292,8 +302,7 @@ class Test_CRTnADD(CommonInit):
         self.bot.insertUpdate(update1)
         recieved = self.bot.sent_messages[-1]['text']
         game_id1 = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
-                             recieved)[0][-Game_91.ID_LENGTH:]
-
+                              recieved)[0][-Game_91.ID_LENGTH:]
 
         add_update = self.mg.get_message(text=f"!ADD {game_id1}",
                                          chat=self.gchat, user=self.u1)
@@ -305,16 +314,12 @@ class Test_CRTnADD(CommonInit):
         self.bot.insertUpdate(update2)
         recieved = self.bot.sent_messages[-1]['text']
         game_id2 = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
-                             recieved)[0][-Game_91.ID_LENGTH:]
-
+                              recieved)[0][-Game_91.ID_LENGTH:]
 
         add_update = self.mg.get_message(text=f"!ADD {game_id2}",
                                          chat=self.gchat2, user=self.u2)
         self.bot.insertUpdate(add_update)
         self.assertRegex(self.bot.sent_messages[-1]['text'], "User added!!")
-
-
-
 
 
 class Test_STR(CommonInit):
@@ -329,7 +334,8 @@ class Test_STR(CommonInit):
                                          chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
                              crt_recieved)[0][-Game_91.ID_LENGTH:]
@@ -355,7 +361,8 @@ class Test_STR(CommonInit):
                                          user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
                              crt_recieved)[0][-Game_91.ID_LENGTH:]
@@ -378,7 +385,8 @@ class Test_STR(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -406,7 +414,8 @@ class Test_STR(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -436,7 +445,8 @@ class Test_STR(CommonInit):
                                          chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
                              crt_recieved)[0][-Game_91.ID_LENGTH:]
@@ -462,7 +472,8 @@ class Test_STR(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -488,7 +499,8 @@ class Test_STR(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -521,7 +533,8 @@ class Test_BID(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -549,7 +562,8 @@ class Test_BID(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -577,7 +591,8 @@ class Test_BID(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -607,7 +622,8 @@ class Test_BID(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -621,13 +637,11 @@ class Test_BID(CommonInit):
             text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
         self.bot.insertUpdate(str_update)
 
-
         bid_update = self.mg.get_message(
             text=f"!BID 3 wrongid", user=user, chat=self.u1chat)
         self.bot.insertUpdate(bid_update)
 
         self.assertEqual(self.bot.sent_messages[-1]['text'], xug_msg)
-
 
     def test_bid_rong_type(self):
         """Tests if bid commad is used with the wrong kind of value
@@ -637,7 +651,8 @@ class Test_BID(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -651,7 +666,8 @@ class Test_BID(CommonInit):
             text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
         self.bot.insertUpdate(str_update)
 
-        bid_update = self.mg.get_message(text=f"!BID o {game_id}", user=self.users[0])
+        bid_update = self.mg.get_message(
+            text=f"!BID o {game_id}", user=self.users[0])
 
         self.bot.insertUpdate(bid_update)
         # print(self.bot.sent_messages[-1])
@@ -667,7 +683,8 @@ class Test_BID(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -681,7 +698,8 @@ class Test_BID(CommonInit):
             text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
         self.bot.insertUpdate(str_update)
 
-        bid_update = self.mg.get_message(text=f"!BID 3 {game_id}", user=self.users[0])
+        bid_update = self.mg.get_message(
+            text=f"!BID 3 {game_id}", user=self.users[0])
 
         self.bot.insertUpdate(bid_update)
 
@@ -696,7 +714,8 @@ class Test_BID(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -710,14 +729,16 @@ class Test_BID(CommonInit):
             text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
         self.bot.insertUpdate(str_update)
 
-        bid_update = self.mg.get_message(text=f"!BID j {game_id}", user=self.users[0])
+        bid_update = self.mg.get_message(
+            text=f"!BID j {game_id}", user=self.users[0])
 
         self.bot.insertUpdate(bid_update)
         # print(self.bot.sent_messages[-1])
 
         self.assertEqual(self.bot.sent_messages[-1]['text'], bids_msg)
 
-        bid_update = self.mg.get_message(text=f"!BID K {game_id}", user=self.users[1])
+        bid_update = self.mg.get_message(
+            text=f"!BID K {game_id}", user=self.users[1])
 
         self.bot.insertUpdate(bid_update)
         # print(self.bot.sent_messages[-1])
@@ -733,7 +754,8 @@ class Test_BID(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -747,11 +769,13 @@ class Test_BID(CommonInit):
             text=f"!STR {game_id}", chat=self.gchat, user=self.u2)
         self.bot.insertUpdate(str_update)
 
-        bid_update = self.mg.get_message(text=f"!BID 3 {game_id}", user=self.users[0])
+        bid_update = self.mg.get_message(
+            text=f"!BID 3 {game_id}", user=self.users[0])
         self.bot.insertUpdate(bid_update)
         # print(self.bot.sent_messages[-1])
 
-        bid_update = self.mg.get_message(text=f"!BID 2 {game_id}", user=self.users[0])
+        bid_update = self.mg.get_message(
+            text=f"!BID 2 {game_id}", user=self.users[0])
         self.bot.insertUpdate(bid_update)
 
         self.assertEqual(self.bot.sent_messages[-1]['text'], xconb_msg)
@@ -765,7 +789,8 @@ class Test_BID(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -781,7 +806,8 @@ class Test_BID(CommonInit):
 
         bids_msg = ""
         for user in self.users:
-            bid_update = self.mg.get_message(text=f"!BID 3 {game_id}", user=user)
+            bid_update = self.mg.get_message(
+                text=f"!BID 3 {game_id}", user=user)
             bids_msg += f"{user.first_name} bid 3\n"
             self.bot.insertUpdate(bid_update)
 
@@ -806,7 +832,8 @@ class Test_BID(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -821,10 +848,12 @@ class Test_BID(CommonInit):
         self.bot.insertUpdate(str_update)
 
         for user in self.users:
-            bid_update = self.mg.get_message(text=f"!BID 3 {game_id}", user=user)
+            bid_update = self.mg.get_message(
+                text=f"!BID 3 {game_id}", user=user)
             self.bot.insertUpdate(bid_update)
 
-        bid_update = self.mg.get_message(text=f"!BID 3 {game_id}", user=self.users[0])
+        bid_update = self.mg.get_message(
+            text=f"!BID 3 {game_id}", user=self.users[0])
         self.bot.insertUpdate(bid_update)
         # print(self.bot.sent_messages[-1])
 
@@ -838,7 +867,8 @@ class Test_BID(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]
@@ -853,10 +883,12 @@ class Test_BID(CommonInit):
         self.bot.insertUpdate(str_update)
 
         for user in self.users[:-1]:
-            bid_update = self.mg.get_message(text=f"!BID 2 {game_id}", user=user)
+            bid_update = self.mg.get_message(
+                text=f"!BID 2 {game_id}", user=user)
             self.bot.insertUpdate(bid_update)
 
-        bid_update = self.mg.get_message(text=f"!BID 3 {game_id}", user=self.users[-1])
+        bid_update = self.mg.get_message(
+            text=f"!BID 3 {game_id}", user=self.users[-1])
         self.bot.insertUpdate(bid_update)
 
         texts = [x["text"] for x in self.bot.sent_messages if "text" in x]
@@ -871,7 +903,8 @@ class Test_BID(CommonInit):
             text="!CRT", chat=self.gchat, user=self.u1)
         self.bot.insertUpdate(crt_update)
         crt_recieved = self.bot.sent_messages[0]['text']
-        self.assertRegex(crt_recieved, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(crt_recieved,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}", crt_recieved)[
             0][-Game_91.ID_LENGTH:]

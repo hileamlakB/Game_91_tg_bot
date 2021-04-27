@@ -204,7 +204,6 @@ class G91_tgingin:
         player_list_key = f"player_{chat_id}_{curent_game.id}"
         player_list = context.bot_data[player_list_key]
 
-
         user = update.effective_user
         if user.id in player_list:
             bot.send_message(chat_id, f"{user.first_name} is already added!")

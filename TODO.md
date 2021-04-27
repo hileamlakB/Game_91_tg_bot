@@ -18,7 +18,8 @@
     -   [ ] Error checking and edge case handling
 -   [ ] Version 0.98 => group score board for compitation(Telegram game bot)
 -   [ ] Version 0.99 => Complete the README.md
--   [ ] Version 0.9999 => Nice Congratulation message for the winner
+-   [ ] Version 0.999 => Nice Congratulation message for the winner
+-   [ ] Version 0.9999 => Add a feed back function (that combined with logs should be used for improvment)
 -   [ ] Version 1.0 => Final Clean up and tidying(Licenceing and proper creediting)
 -   [ ] Version 1.0 => First release
 -   [ ] Version 1.1 => Add test for all classes
