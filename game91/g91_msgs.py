@@ -24,20 +24,20 @@ Waiting for you to join!!
 """
 ready_msg = """
 ****************************************
- The game is now ready to be played!!!
- It has enough player!! You can also add some more.
+The game is now ready to be played!!!
+It has enough player!! You can also add some more.
 
- You can go and play by inserting the !STR command
+You can go and play by inserting the !STR command
 ****************************************
 """
 maxp_msg = """
 ****************************************
- Couldn't add new player!
+Couldn't add new player!
 
- The game has reached its maximum player Limits. you can start \
-     another game later.
+The game has reached its maximum player Limits. you can start \
+another game later.
 
- For now, you can start playing by tying the !STR command
+For now, you can start playing by tying the !STR command
 ****************************************
 """
 noid_msg = """
@@ -65,7 +65,7 @@ to initialize a conversation with it. You can do that by going \
 to @game_91_bot and pressing start. After that you can retype \
 the !STR command"
 started_msg = "The game is now started no more players can be added!\
-    you can now play. Type !INS anytime to see instructions."
+you can now play. Type !INS anytime to see instructions."
 fround_msg = """
 Round one has begun!!!
 
@@ -144,11 +144,11 @@ comands to interact with the bot
 => `!CRT` - create command that creates a game session and sends the game id
 
 => `!ADD <game id>` - adds the player who types the command to the game \
-    session identified by the game id. The game id can be seen from the \
-        the CRT command response
+session identified by the game id. The game id can be seen from the \
+the CRT command response
 
 => `!STR <game id>` - start command, that tells the bot that all \
-    players have been added and hence it should start the game.
+players have been added and hence it should start the game.
 
 => `!BID <game id>` - Command used to bid for a card in private message
 
@@ -159,11 +159,14 @@ comands to interact with the bot
 tie_msg = """
 There was a tie in this round no one won this  time.
 The prize will go the next round and will be agrigated with the next \
-    \round's prize
+\round's prize
 """
 xplay_msg = "You aren't playing any game! Go to your favorite group and \
-    create one"
+create one"
 nbid_msg = "Please specify the bid amount!!"
+nid_msg = "Please specify to which game you want to bid with the game id \
+you got during the creation!!"
 xconb_msg = "You can't bid now! wait till this round is over!"
 xcard_msg = "You can't bid with that card you don't have it!"
 bids_msg = "Your bid has been recorded!!"
+xug_msg = "You are not a part of this game!!"

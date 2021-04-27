@@ -12,7 +12,8 @@ from .g91 import Game_91
 from .g91_msgs import (bid_msg, bids_msg, cmd_msg, game_created, init_msg,
                        ins_msg, maxp_msg, nbid_msg, noid_msg, nstart_msg,
                        ready_msg, started_msg, tie_msg, win_msg, xaddp_msg,
-                       xcard_msg, xconb_msg, xgame_msg, xplay_msg, xuser_msg)
+                       xcard_msg, xconb_msg, xgame_msg, xplay_msg, xuser_msg,
+                       nid_msg, xug_msg)
 
 
 class G91_tgingin:
@@ -162,19 +163,22 @@ class G91_tgingin:
         chat_id = update.message.chat_id
         bot = context.bot
 
-        # check if no game object in this group before you
-        # create a new object, to be impoved in the future
-        if not context.chat_data:
-            game = Game_91()
+        game = Game_91()
 
-            game.chat_id = str(chat_id)
+        game.chat_id = str(chat_id)
 
-            context.chat_data[game.id] = game
-            context.bot_data[chat_id] = game
+        context.chat_data[game.id] = game
+        if chat_id not in context.bot_data:
+            context.bot_data[chat_id] = [game]
+        else:
+            context.bot_data[chat_id] += [game]
 
-            pmin = Game_91.MIN_PLAYERS
-            pmax = Game_91.MAX_PLAYERS
-            bot.send_message(chat_id, game_created.format(game.id, pmin, pmax))
+        player_list_key = f"player_{chat_id}_{game.id}"
+        context.bot_data[player_list_key] = []  # list of players
+
+        pmin = Game_91.MIN_PLAYERS
+        pmax = Game_91.MAX_PLAYERS
+        bot.send_message(chat_id, game_created.format(game.id, pmin, pmax))
 
     def add_player(self, update: Update, context: CallbackContext) -> None:
         """
@@ -197,11 +201,12 @@ class G91_tgingin:
             return
 
         curent_game = context.chat_data[game_id]
-        user = update.effective_user
-        player = Player(user.first_name, curent_game, self.next_suit())
-        player.user = user
+        player_list_key = f"player_{chat_id}_{curent_game.id}"
+        player_list = context.bot_data[player_list_key]
 
-        if user.id in context.bot_data:
+
+        user = update.effective_user
+        if user.id in player_list:
             bot.send_message(chat_id, f"{user.first_name} is already added!")
             return
 
@@ -209,12 +214,19 @@ class G91_tgingin:
             bot.send_message(chat_id, xaddp_msg)
             return
 
+        player = Player(user.first_name, curent_game, self.next_suit())
+        player.user = user
         if not curent_game.add_player(player):
             bot.send_message(chat_id, maxp_msg)
             return
         bot.send_message(chat_id, f"{user.first_name} added!!")
 
-        context.bot_data[user.id] = player
+        player_list.append(user.id)  # this data might not be necessary
+        if user.id not in context.bot_data:
+            context.bot_data[user.id] = {game_id: player}
+        else:
+            context.bot_data[user.id][game_id] = player
+
         if curent_game.is_ready():
             bot.send_message(chat_id, ready_msg)
 
@@ -253,7 +265,7 @@ class G91_tgingin:
             bot.send_message(chat_id, nstart_msg)
 
     def bid_card(self, update: Update, context: CallbackContext) -> None:
-        """ Process bids from uses on private chat """
+        """ Process bids from users on private chat """
         bot = context.bot
         cmd = update.message.text.split(" ")
         user = update.effective_user
@@ -261,14 +273,20 @@ class G91_tgingin:
         if len(cmd) < 2:
             bot.send_message(user['id'], nbid_msg)
             return
+        if len(cmd) < 3:
+            bot.send_message(user['id'], nid_msg)
+            return
 
         if user.id not in context.bot_data:
             bot.send_message(user['id'], xplay_msg)
             return
 
-        player = context.bot_data[user.id]
-        # TODO
-        # handle the case where a plyaer could be part of many games
+        game_id = cmd[2]
+        if game_id not in context.bot_data[user.id]:
+            bot.send_message(user['id'], xug_msg)
+            return
+
+        player = context.bot_data[user.id][game_id]
         curent_game = player.game
 
         if not self.check_bid(bot, user['id'], curent_game, player, cmd[1]):
