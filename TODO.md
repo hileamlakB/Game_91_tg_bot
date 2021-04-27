@@ -7,12 +7,15 @@
 -   [x] Version 0.599 => Refactor to make atmost 30 lines per function
 -   [x] Version 0.6 => Write tests
 -   [x] Version 0.65 => Test scalability for multiple players
--   [ ] Version 0.699 => Pylama linting and githubactions
-	- [x] Pylama
-	- [ ] githubactions
+-   [x] Version 0.699 => Pylama linting and githubactions
+    -   [x] Pylama
+    -   [x] githubactions
 -   [x] version 0.7 => give different suits for different players
--   [ ] Version 0.8 => Multi player mode both in different groups and in single groups
--   [ ] Version 0.9 => Error checking, edge case handling, more test
+-   [x] Version 0.8 => Multi player mode both in different groups and in single groups
+-   [ ] Version 0.9 => Error checking, edge case handling, more test, refactor test by modularizing, DRY
+    -   [ ] Modularize existing test (DRY)
+    -   [ ] More tests for other classes
+    -   [ ] Error checking and edge case handling
 -   [ ] Version 0.98 => group score board for compitation(Telegram game bot)
 -   [ ] Version 0.99 => Complete the README.md
 -   [ ] Version 0.9999 => Nice Congratulation message for the winner
