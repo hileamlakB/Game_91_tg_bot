@@ -13,7 +13,7 @@
 -   [x] version 0.7 => give different suits for different players
 -   [x] Version 0.8 => Multi player mode both in different groups and in single groups
 -   [ ] Version 0.9 => Error checking, edge case handling, more test, refactor test by modularizing, DRY
-    -   [ ] Modularize existing test (DRY)
+    -   [x] Modularize existing test (DRY)
     -   [ ] More tests for other classes
     -   [ ] Error checking and edge case handling
 -   [ ] Version 0.98 => group score board for compitation(Telegram game bot)
