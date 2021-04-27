@@ -77,7 +77,7 @@ class CommonInit(unittest.TestCase):
     def tearDown(self):
         self.updater.stop()
 
-    def send(self, cmd, chat=None, user=None, index = -1) -> str:
+    def send(self, cmd, chat=None, user=None, index=-1) -> str:
         """
         Sends the cmd command to the mock bot and returns
         the 'text' attribut of the last response
@@ -104,6 +104,7 @@ class CommonInit(unittest.TestCase):
             return response
         return "'"
 
+
 class Test_CRTnADD(CommonInit):
     """Tests the game telegram engines with 2 methods (CRT, ADD)"""
 
@@ -112,20 +113,24 @@ class Test_CRTnADD(CommonInit):
         tg_engine object"""
 
         response = self.send("!CRT", self.gchat, self.u1)
-        self.assertRegex(response, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(response,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
     def test_create_multi_chat(self):
         """Tests multiple game creation in the diferent group"""
 
         response = self.send("!CRT", self.gchat, self.u1)
-        self.assertRegex(response, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(response,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         response = self.send("!CRT", self.gchat2, self.u2)
-        self.assertRegex(response, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(response,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
         # one player in different group at the same time
         response = self.send("!CRT", self.gchat3, self.u1)
-        self.assertRegex(response, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+        self.assertRegex(response,
+                         r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
     def test_multi_create(self):
         """Tests multiple gae creation in the same group"""
@@ -134,7 +139,8 @@ class Test_CRTnADD(CommonInit):
         # in multiple games
         for x in range(5):
             response = self.send("!CRT", self.gchat, self.u1)
-            self.assertRegex(response, r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
+            self.assertRegex(response,
+                             r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}")
 
     def test_add_no_id(self):
         """Tests the add player functinoality when
@@ -565,7 +571,6 @@ class Test_BID(CommonInit):
             response = self.send(cmd=f"!BID 3 {game_id}", user=user)
             bids_msg += f"{user.first_name} bid 3\n"
 
-
         self.assertEqual(response, bid_msg.format(2))
         self.assertTrue(
             self.bot.sent_messages[-2 - len(self.users)]['photo'] != '')
@@ -657,10 +662,14 @@ class Test_BID(CommonInit):
                 bid_card = random.choice(self.users_cards[user])
                 self.users_cards[user].remove(bid_card)
 
-                response = self.send(cmd=f"!BID {bid_card} {game_id}", user=user)
+                response = self.send(
+                    cmd=f"!BID {bid_card} {game_id}", user=user)
 
         # print(self.bot.sent_messages[-1]["text"])
-        self.assertRegex(response, "(No one won!! There was a tie)|(Congratulation)")
+        self.assertRegex(
+            response,
+            "(No one won!! There was a tie)|(Congratulation)")
+
 
 class Test_CMDnINS(CommonInit):
     """ Test the CMD and INS funcinality of the game engine object"""
