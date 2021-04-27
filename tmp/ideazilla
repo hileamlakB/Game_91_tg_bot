@@ -42,3 +42,7 @@ Add the ability to change bid until everyone finished
 if a started game is paused for a while, remind the group who didn't bid once in a while in a fixed time interal
 
 have a games commands that list the list of games that are already started in the group
+
+Auto detect where the player wants to bid without they explicitly mentioning it, in case there are many options prompt them two choosei i(annoying and mindless stupid work from the programer side but good for the users) 
+
+Show status - also shows the games you are planning
