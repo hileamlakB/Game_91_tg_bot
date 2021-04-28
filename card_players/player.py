@@ -94,3 +94,31 @@ class Player:
             self.total_points += mapper[card[1]]
 
         return self.total_points
+
+    def get_cards(self) -> str:
+        """Returns the list of cards owned by this player
+        as one long string"""
+
+        emoji_map = Cards.SUIT_MAP
+
+        cards =  self.cards.get_cards()
+        card_str = ""
+        for card in cards:
+            suit, value = card
+            card_str += str(value) + emoji_map[suit] + " "
+
+        return card_str
+
+    def get_wins(self) -> str:
+        """Returns the list of cards won by this player
+        as one long string"""
+
+        emoji_map = Cards.SUIT_MAP
+
+
+        card_str = ""
+        for card in self.won:
+            suit, value = card
+            card_str += str(value) + emoji_map[suit] + " "
+
+        return card_str

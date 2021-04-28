@@ -12,7 +12,8 @@ class Cards:
     """ A class to manipulate playing cards """
 
     CARD_VALUES = list(range(2, 11)) + ['A', 'J', 'Q', 'K']
-    SUIT_OPTIONS = ["CLUB", "DIAMOND", "SPADE", "FLOWER"]
+    SUIT_OPTIONS = ["CLUB", "DIAMOND", "SPADE", "HEART"]
+    SUIT_MAP = {"CLUB":"♣️", "DIAMOND": "♦", "SPADE": "♠", "HEART":"♥"}
 
     def __init__(self, *args, **kwargs):
         """intializes a cards object
@@ -113,3 +114,7 @@ class Cards:
             if card[0] in Cards.SUIT_OPTIONS and card[1] in Cards.CARD_VALUES:
                 return True
         return False
+
+    def get_cards(self) -> list:
+        """ returns the list of cards """
+        return self.cards

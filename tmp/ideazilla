@@ -1,48 +1,40 @@
-Improve the game engine's start method
-After tests has been created, add integration actiona and linting to your repo
-
-After image addition, reogranize your structure into a nice folder hyrarcy, and packages
-
 Have a stop method incase the players want to restart mid game or start a new one for
 some reason, this method should call the clearn up method from anythim
-
-Refactor the telegram engine to make it more modluarized
-
-Make sure the bided numbers are within the amount the players own
-
-Clean up tie winner messages, double prize messages and stuff like that
-
-Instead of strict command maching make it a regex to acoumdate for space and capitilatation
 
 
 NEW feature
     - Add a show stat function that shows who have already bided and who hasn't yet
     (may be even when the staatus function isn't called, it could be an option to enable verbose mode)
-    - Add a fedback function that will send feedback
 
 Use a databse to make sessions persistance even incase of failures. Allow mmutlpiple games in a group and multiple groups
 
-Add a show method tthat shows the cards each player still has left in pricat caht
-
 when a close command is written correct the input
 
-Show status could also include the curreent round prizes and the won cards or  what the user specifically wants to see with specific arguement
 
-Optional round end messages on private chat (congratulation or keep trying message) as an optional feature
-
-Add an option not to use pictures
+Add an option not to use pictures on private chates instead of emojis
 
 Some seconds between consecuent messages to give players engouh time to read$image
 
-Advertisment
-
+Advertisment for the game
 
 Add the ability to change bid until everyone finished
- 
+
 if a started game is paused for a while, remind the group who didn't bid once in a while in a fixed time interal
 
 have a games commands that list the list of games that are already started in the group
 
-Auto detect where the player wants to bid without they explicitly mentioning it, in case there are many options prompt them two choosei i(annoying and mindless stupid work from the programer side but good for the users) 
+Auto detect where the player wants to bid without they explicitly mentioning it, in case there are many options prompt them two choosei i(annoying and mindless stupid work from the programer side but good for the users)
 
-Show status - also shows the games you are planning
+
+Set a timer so that if the bot players didnt' respond in the specifeid time the bot will automatically bid the minumum card they have
+
+
+auto complete the last bid
+
+delete if bid command is mistakenly sent on the group
+
+Delete all the messages created by the bot during the game if that option is set
+
+the creator should be automatically aded to the game
+
+Remove data once a game has been abonded for some tiem

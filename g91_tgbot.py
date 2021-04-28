@@ -11,7 +11,10 @@ from telegram.ext import CommandHandler, Filters, MessageHandler, Updater
 
 # Enable logging
 log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-logging.basicConfig(format=log_format, level=logging.INFO)
+logging.basicConfig(format=log_format,
+                    level=logging.INFO,
+                    filename="tg_bot.log",
+                    encoding='utf-8')
 
 
 def main() -> None:
@@ -21,7 +24,7 @@ def main() -> None:
     g_engine = G91_tgingin()
 
     # Create the Updater and pass it your bot's token.
-    updater = Updater("1792874118:AAH31TYxIi2Ct2Tk6UEbJ0RKrOqzW5BTYjQ",
+    updater = Updater("1622385036:AAHWRqkTwjUyFRvq8zb1iL7h3_uxqgedDeU",
                       use_context=True)
 
     dispatcher = updater.dispatcher

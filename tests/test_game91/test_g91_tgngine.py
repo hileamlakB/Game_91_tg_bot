@@ -147,7 +147,7 @@ class Test_CRTnADD(CommonInit):
         no id is provided"""
 
         self.send("!CRT", self.gchat, self.u1)
-        response = self.send("!ADD", self.gchat, self.u1)
+        response = self.send("!JOIN", self.gchat, self.u1)
         self.assertRegex(response, noid_msg)
 
     def test_add_wrong_id(self):
@@ -155,7 +155,7 @@ class Test_CRTnADD(CommonInit):
         no id is provided"""
 
         self.send("!CRT", self.gchat, self.u1)
-        response = self.send("!ADD rongopokol", self.gchat, self.u1)
+        response = self.send("!JOIN rongopokol", self.gchat, self.u1)
         self.assertRegex(response, xgame_msg)
 
     def test_add(self):
@@ -166,7 +166,7 @@ class Test_CRTnADD(CommonInit):
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
                              response)[0][-Game_91.ID_LENGTH:]
 
-        response = self.send(f'!ADD {game_id}', self.gchat, self.u1)
+        response = self.send(f'!JOIN {game_id}', self.gchat, self.u1)
         self.assertRegex(response, "User added!!")
 
     def test_player_already_added(self):
@@ -178,7 +178,7 @@ class Test_CRTnADD(CommonInit):
                              response)[0][-Game_91.ID_LENGTH:]
 
         for x in range(2):
-            response = self.send(f'!ADD {game_id}', self.gchat, self.u1)
+            response = self.send(f'!JOIN {game_id}', self.gchat, self.u1)
 
         self.assertEqual(response, f"{self.u1.first_name} is already added!")
 
@@ -197,7 +197,7 @@ class Test_CRTnADD(CommonInit):
             # the request since there are clutter messages in between send
             # by the bot. And 1 is used, since there is alreay one message
             # from the creat command in the start
-            response = self.send(f'!ADD {game_id}', self.gchat, user, 1 + x)
+            response = self.send(f'!JOIN {game_id}', self.gchat, user, 1 + x)
             self.assertEqual(response, f"{user.first_name} added!!")
 
         self.assertEqual(self.bot.sent_messages[-1]["text"], ready_msg)
@@ -213,7 +213,7 @@ class Test_CRTnADD(CommonInit):
 
         for x in range(Game_91.MAX_PLAYERS + 1):
             user = self.ug.get_user(is_bot=False)
-            response = self.send(f'!ADD {game_id}', self.gchat, user)
+            response = self.send(f'!JOIN {game_id}', self.gchat, user)
 
         self.assertEqual(response, maxp_msg)
 
@@ -232,11 +232,11 @@ class Test_CRTnADD(CommonInit):
 
         for x in range(Game_91.MIN_PLAYERS - 1):
             user = self.ug.get_user(is_bot=False)
-            response = self.send(f'!ADD {game_id1}', self.gchat, user)
+            response = self.send(f'!JOIN {game_id1}', self.gchat, user)
             self.assertRegex(response, f"{user.first_name} added!!")
 
             user = self.ug.get_user(is_bot=False)
-            response = self.send(f'!ADD {game_id2}', self.gchat, user)
+            response = self.send(f'!JOIN {game_id2}', self.gchat, user)
             self.assertRegex(response, f"{user.first_name} added!!")
 
     def test_add_multi_chat(self):
@@ -246,14 +246,14 @@ class Test_CRTnADD(CommonInit):
         game_id1 = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
                               response)[0][-Game_91.ID_LENGTH:]
 
-        response = self.send(f'!ADD {game_id1}', self.gchat, self.u1)
+        response = self.send(f'!JOIN {game_id1}', self.gchat, self.u1)
         self.assertRegex(response, f"{self.u1.first_name} added!!")
 
         response = self.send("!CRT", self.gchat2, self.u2)
         game_id2 = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
                               response)[0][-Game_91.ID_LENGTH:]
 
-        response = self.send(f'!ADD {game_id2}', self.gchat2, self.u2)
+        response = self.send(f'!JOIN {game_id2}', self.gchat2, self.u2)
         self.assertRegex(response, f"{self.u2.first_name} added!!")
 
 
@@ -270,7 +270,7 @@ class Test_STR(CommonInit):
                              response)[0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            response = self.send(f'!ADD {game_id}', self.gchat, user)
+            response = self.send(f'!JOIN {game_id}', self.gchat, user)
 
         response = self.send("!STR", self.gchat, self.u2)
 
@@ -284,7 +284,7 @@ class Test_STR(CommonInit):
         game_id = re.findall(r"Game Id: \w{" + str(Game_91.ID_LENGTH) + "}",
                              response)[0][-Game_91.ID_LENGTH:]
 
-        self.send(f'!ADD {game_id}', self.gchat, self.u1)
+        self.send(f'!JOIN {game_id}', self.gchat, self.u1)
 
         response = self.send(f"!STR {game_id}", self.gchat, self.u2)
         self.assertEqual(response, nstart_msg)
@@ -299,7 +299,7 @@ class Test_STR(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            response = self.send(f'!ADD {game_id}', self.gchat, user)
+            response = self.send(f'!JOIN {game_id}', self.gchat, user)
 
         response = self.send("!STR 12456", self.gchat, self.u2)
 
@@ -319,7 +319,7 @@ class Test_STR(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            response = self.send(f'!ADD {game_id}', self.gchat, user)
+            response = self.send(f'!JOIN {game_id}', self.gchat, user)
 
         response = self.send(f"!STR {game_id}", self.gchat, self.u2)
 
@@ -339,13 +339,12 @@ class Test_STR(CommonInit):
                              response)[0][-Game_91.ID_LENGTH:]
 
         for user in self.users[:Game_91.MIN_PLAYERS]:
-            response = self.send(f'!ADD {game_id}', self.gchat, user)
+            response = self.send(f'!JOIN {game_id}', self.gchat, user)
         self.assertEqual(self.bot.sent_messages[-1]["text"], ready_msg)
 
         response = self.send(f"!STR {game_id}", self.gchat, self.u2)
 
-        self.assertEqual(
-            self.bot.sent_messages[-1]['text'], "Make your round 1 bids!!")
+        self.assertRegex(response, "To bid you can do .B <value> <game_id>")
 
     def test_start_game(self):
         """Tests if the start functinoality of the game eninge works well
@@ -357,11 +356,11 @@ class Test_STR(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            response = self.send(f'!ADD {game_id}', self.gchat, user)
+            response = self.send(f'!JOIN {game_id}', self.gchat, user)
 
         response = self.send(f"!STR {game_id}", self.gchat, self.u2)
 
-        self.assertEqual(response, "Make your round 1 bids!!")
+        self.assertRegex(response, "To bid you can do .B <value> <game_id>")
 
     def test_add_after_start(self):
         """Tests if the start functinoality of the game eninge works well
@@ -374,11 +373,11 @@ class Test_STR(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            response = self.send(f'!ADD {game_id}', self.gchat, user)
+            response = self.send(f'!JOIN {game_id}', self.gchat, user)
 
         response = self.send(f"!STR {game_id}", self.gchat, self.u2)
 
-        response = self.send(f"!ADD {game_id}", self.gchat, self.u2)
+        response = self.send(f"!JOIN {game_id}", self.gchat, self.u2)
 
         self.assertEqual(response, xaddp_msg)
 
@@ -397,7 +396,7 @@ class Test_BID(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            self.send(f'!ADD {game_id}', self.gchat, user)
+            self.send(f'!JOIN {game_id}', self.gchat, user)
 
         self.send(f"!STR {game_id}", self.gchat, self.u2)
 
@@ -416,7 +415,7 @@ class Test_BID(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            self.send(f'!ADD {game_id}', self.gchat, user)
+            self.send(f'!JOIN {game_id}', self.gchat, user)
 
         self.send(f"!STR {game_id}", self.gchat, self.u2)
 
@@ -435,7 +434,7 @@ class Test_BID(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            self.send(f'!ADD {game_id}', self.gchat, user)
+            self.send(f'!JOIN {game_id}', self.gchat, user)
 
         self.send(f"!STR {game_id}", self.gchat, self.u2)
 
@@ -455,7 +454,7 @@ class Test_BID(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            self.send(f'!ADD {game_id}', self.gchat, user)
+            self.send(f'!JOIN {game_id}', self.gchat, user)
 
         self.send(f"!STR {game_id}", self.gchat, self.u2)
 
@@ -473,7 +472,7 @@ class Test_BID(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            self.send(f'!ADD {game_id}', self.gchat, user)
+            self.send(f'!JOIN {game_id}', self.gchat, user)
 
         self.send(f"!STR {game_id}", self.gchat, self.u2)
 
@@ -491,13 +490,13 @@ class Test_BID(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            self.send(f'!ADD {game_id}', self.gchat, user)
+            self.send(f'!JOIN {game_id}', self.gchat, user)
 
         self.send(f"!STR {game_id}", self.gchat, self.u2)
 
         response = self.send(cmd=f"!BID 3 {game_id}", user=self.users[0])
 
-        self.assertEqual(response, bids_msg)
+        self.assertRegex(response, bids_msg[:-3])
 
     def test_bid_chars(self):
         """Tests if bid commad works for the correct case wnen the cards
@@ -510,25 +509,17 @@ class Test_BID(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            response = self.send(f'!ADD {game_id}', self.gchat, user)
+            self.send(f'!JOIN {game_id}', self.gchat, user)
 
-        response = self.send(f"!STR {game_id}", self.gchat, self.u2)
+        self.send(f"!STR {game_id}", self.gchat, self.u2)
 
-        bid_update = self.mg.get_message(
-            text=f"!BID j {game_id}", user=self.users[0])
+        response = self.send(cmd=f"!BID j {game_id}", user=self.users[0])
 
-        self.bot.insertUpdate(bid_update)
-        # print(self.bot.sent_messages[-1])
+        self.assertRegex(response, bids_msg[:-3])
 
-        self.assertEqual(self.bot.sent_messages[-1]['text'], bids_msg)
+        response = self.send(cmd=f"!BID K {game_id}", user=self.users[1])
 
-        bid_update = self.mg.get_message(
-            text=f"!BID K {game_id}", user=self.users[1])
-
-        self.bot.insertUpdate(bid_update)
-        # print(self.bot.sent_messages[-1])
-
-        self.assertEqual(self.bot.sent_messages[-1]['text'], bids_msg)
+        self.assertRegex(response, bids_msg[:-3])
 
     def test_con_bid(self):
         """Tests if bid commad works when some one uses it
@@ -541,7 +532,7 @@ class Test_BID(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            self.send(f'!ADD {game_id}', self.gchat, user)
+            self.send(f'!JOIN {game_id}', self.gchat, user)
 
         self.send(f"!STR {game_id}", self.gchat, self.u2)
 
@@ -562,18 +553,16 @@ class Test_BID(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            self.send(f'!ADD {game_id}', self.gchat, user)
+            self.send(f'!JOIN {game_id}', self.gchat, user)
 
         self.send(f"!STR {game_id}", self.gchat, self.u2)
 
         bids_msg = ""
         for user in self.users:
-            response = self.send(cmd=f"!BID 3 {game_id}", user=user)
+            response = self.send(cmd=f"!BID 3 {game_id}", user=user, index=-2)
             bids_msg += f"{user.first_name} bid 3\n"
 
-        self.assertEqual(response, bid_msg.format(2))
-        self.assertTrue(
-            self.bot.sent_messages[-2 - len(self.users)]['photo'] != '')
+        self.assertRegex(response, bid_msg.format(2))
 
         texts = [x["text"] for x in self.bot.sent_messages if "text" in x]
 
@@ -581,7 +570,6 @@ class Test_BID(CommonInit):
         self.assertTrue("Here are round 2 prizes" in texts)
 
         self.assertTrue(tie_msg in texts)
-        self.assertTrue(bids_msg in texts)
 
     def test_bid_rong_card(self):
         """Tests if using a card twine for biding
@@ -594,7 +582,7 @@ class Test_BID(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            self.send(f'!ADD {game_id}', self.gchat, user)
+            self.send(f'!JOIN {game_id}', self.gchat, user)
 
         self.send(f"!STR {game_id}", self.gchat, self.u2)
 
@@ -615,7 +603,7 @@ class Test_BID(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            self.send(f'!ADD {game_id}', self.gchat, user)
+            self.send(f'!JOIN {game_id}', self.gchat, user)
 
         self.send(f"!STR {game_id}", self.gchat, self.u2)
 
@@ -638,7 +626,7 @@ class Test_BID(CommonInit):
             0][-Game_91.ID_LENGTH:]
 
         for user in self.users:
-            self.send(f'!ADD {game_id}', self.gchat, user)
+            self.send(f'!JOIN {game_id}', self.gchat, user)
 
         self.send(f"!STR {game_id}", self.gchat, self.u2)
 
@@ -661,11 +649,10 @@ class Test_BID(CommonInit):
             for user in self.users:
                 bid_card = random.choice(self.users_cards[user])
                 self.users_cards[user].remove(bid_card)
-
                 response = self.send(
                     cmd=f"!BID {bid_card} {game_id}", user=user)
 
-        # print(self.bot.sent_messages[-1]["text"])
+        response = ' '.join([m['text'] for m in self.bot.sent_messages[:-6] if 'text' in m])
         self.assertRegex(
             response,
             "(No one won!! There was a tie)|(Congratulation)")

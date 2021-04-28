@@ -13,7 +13,9 @@ from .g91_msgs import (bid_msg, bids_msg, cmd_msg, game_created, init_msg,
                        ins_msg, maxp_msg, nbid_msg, noid_msg, nstart_msg,
                        ready_msg, started_msg, tie_msg, win_msg, xaddp_msg,
                        xcard_msg, xconb_msg, xgame_msg, xplay_msg, xuser_msg,
-                       nid_msg, xug_msg)
+                       nid_msg, xug_msg, urc_msg, test_msg, bidh_msg, stat_msg)
+from card_games.cards import Cards
+from .anim import get_anim_url
 
 
 class G91_tgingin:
@@ -32,27 +34,36 @@ class G91_tgingin:
         # {COMAND: [[CHAT_TYPE, . . .], CALLBACK_FUNCTION]}
         self.cmd_map = {
             "!CRT": [["group", "supergroup"], self.create_game],
-            "!ADD": [["group", "supergroup"], self.add_player],
+            "!JOIN": [["group", "supergroup"], self.add_player],
             "!STR": [["group", "supergroup"], self.start_game],
-            "!BID": [["private", "supergroup"], self.bid_card],
+            "!BID": [["private"], self.bid_card],
             "!INS": [["group", "private", "supergroup"], self.show_ins],
             "!CMD": [["group", "private", "supergroup"], self.show_cmd],
+            "!FED": [["group", "private", "supergroup"], self.get_fed],
+            "!STAT": [["private"], self.show_stat],
+            ".C": [["group", "supergroup"], self.create_game],
+            ".J": [["group", "supergroup"], self.add_player],
+            ".S": [["group", "supergroup"], self.start_game],
+            ".B": [["private"], self.bid_card],
+            ".I": [["group", "private", "supergroup"], self.show_ins],
+            ".M": [["group", "private", "supergroup"], self.show_cmd],
+            ".F": [["group", "private", "supergroup"], self.get_fed],
+            ".ST": [["private"], self.show_stat],
         }
 
-        self.SUIT_OPTIONS = ["CLUB", "DIAMOND", "SPADE", "FLOWER"]
         self.current_option = 0
 
     def next_suit(self):
         """
         return the next unused suit
         """
-
         if self.current_option == 4:
             self.current_option = 0
 
         current = self.current_option
         self.current_option += 1
-        return self.SUIT_OPTIONS[current]
+        return Cards.SUIT_OPTIONS[current]
+
 
     def req_bid(self, bot, group_id, game):
         """
@@ -65,27 +76,32 @@ class G91_tgingin:
             with open("./data/card_images/" + iname, 'rb') as im:
                 bot.send_photo(group_id, photo=im.read(),
                                caption=f"The {prize[1]} of {prize[0]} \
-                                   is up for a bid")
-        bot.send_message(group_id, bid_msg.format(game.round))
+is up for a bid")
+        bot.send_message(group_id, bid_msg.format(game.round) + "Here @game_91_bot")
+
+
 
         for player in game.get_players():
             pid = player.user['id']
-            bot.send_message(pid, bid_msg.format(game.round))
+            cbid_msg = bid_msg.format(game.round) + "For " + game.get_c_prize() + "in " + game.id
+            bot.send_message(pid, cbid_msg)
+
+            cards = player.get_cards()
+            if cards:
+                bot.send_message(pid, urc_msg + cards + bidh_msg)
+
 
     def test_init(self, bot, game):
         """
         Checks if bot messaging is initialized with all players
         returns a list of all the players that haven't initialized bot chat.
-        TODO
-        See if there is a better way to check autherization without sending
-        messages
         """
         uusers = []
 
         for player in game.get_players():
             try:
                 pid = player.user['id']
-                bot.send_message(pid, "TEST")
+                bot.send_message(pid, test_msg.format(player.get_cards(), game.id))
 
             except Unauthorized:
                 uusers.append(player.user['first_name'])
@@ -126,8 +142,21 @@ class G91_tgingin:
             bot.send_message(user_id, xcard_msg)
             return False
 
-        bot.send_message(user_id, bids_msg)
+
+        bot.send_message(user_id, bids_msg.format(game.g_link))
         return True
+
+    def forward(self, bot, forward_to: list, msg, forward_from):
+        """
+        forward message msg to every one in the
+        forward_to list. The list expects player objects
+        with a user (telegram.User) attribute.
+
+        The bot will be the user that will forward the message
+        """
+
+        for p in forward_to:
+            bot.forward_message(p.user.id, forward_from, msg.message_id)
 
     def post_round(self, bot, group_id, game):
         """
@@ -135,24 +164,48 @@ class G91_tgingin:
         """
         winner = game.handle_winner()
         if winner[0] is not None:
-            bot.send_message(group_id, f"{winner[0].name} won this round")
+            msg = bot.send_message(group_id, f"{winner[0].name} won this round")
+            self.forward(bot, game.get_players(), msg, group_id)
+
+
+            msg = bot.send_message(group_id, f"Congratulation my friend {winner[0].name}")
+            bot.forward_message(winner[0].user.id, group_id, msg.message_id)
+            try:
+                bot.send_animation(winner[0].user.id, animation=get_anim_url(), caption="Powered By Tenor")
+            except Exception as e:
+                print(e)
             return
 
-        bot.send_message(group_id, tie_msg)
+        msg = bot.send_message(group_id, tie_msg)
+        self.forward(bot, game.get_players(), msg, group_id)
+
 
     def post_final(self, bot, group_id, game):
         """Post the fnial message one the game is over"""
         f_winner = game.final_winner()
         if len(f_winner) == 1:
-            bot.send_message(group_id,
+            msg = bot.send_message(group_id,
                              win_msg.format(f_winner[0].name,
-                                            f_winner[0].total_points))
+                                            f_winner[0].total_points,
+                                            f_winner[0].get_wins()))
+
+            bot.send_message(group_id, f"🎊🎊🎊🎊🎊🎊🎊🎊🎊HERRAY!!🎊🎊🎊🎊🎊🎊🎊\nwe love {f_winner[0].name}")
+            bot.send_message(f_winner[0].user.id, f"🎊🎊🎊🎊🎊🎊🎊🎊🎊HERRAY!!🎊🎊🎊🎊🎊🎊🎊\nwe love {f_winner[0].name}")
+
+            try:
+                bot.send_animation(group_id, animation = get_anim_url(), caption="Powered By Tenor")
+                bot.send_animation(f_winner[0].user.id, animation = get_anim_url(), caption="Powered By Tenor")
+            except Exception as e:
+                print(e)
+
+            self.forward(bot, game.get_players(), msg, group_id)
             return
 
         w_msg = "No one won!! There was a tie between "
         for winner in f_winner:
             w_msg += f"{winner.name}, "
-        bot.send_message(group_id, w_msg)
+        msg = bot.send_message(group_id, w_msg)
+        self.forward(bot, game.get_players(), msg, group_id)
 
     def create_game(self, update: Update, context: CallbackContext) -> None:
         """
@@ -166,6 +219,11 @@ class G91_tgingin:
         game = Game_91()
 
         game.chat_id = str(chat_id)
+        game.g_link = update.message.chat.link
+        game.previous_bid = None
+
+        if not game.g_link:
+            game.g_link = update.message.chat.title
 
         context.chat_data[game.id] = game
         if chat_id not in context.bot_data:
@@ -294,24 +352,60 @@ class G91_tgingin:
         group_id = curent_game.chat_id
         if curent_game.is_round_complete():
 
-            bot.send_message(group_id, f"{curent_game.get_bids()}")
+            if curent_game.previous_bid:
+                bot.delete_message(group_id, curent_game.previous_bid.message_id)
+                for p in curent_game.get_players():
+                    bot.delete_message(p.user.id,  p.previous_bid.message_id)
+
+
+            msg = bot.send_message(group_id, f"{curent_game.get_bids()}")
+            for p in curent_game.get_players():
+                p.previous_bid = bot.forward_message(p.user.id, group_id, msg.message_id)
+
+            curent_game.previous_bid = msg
             # post round results in the end
             self.post_round(bot, group_id, curent_game)
             curent_game.next_round()
 
             if curent_game.is_complete():
                 self.post_final(bot, group_id, curent_game)
+                self.clean_up(update, context, group_id, curent_game)
 
             else:
                 self.req_bid(bot, group_id, curent_game)
 
-            self.clean_up(update, context)
+    def get_fed(self, update: Update, context: CallbackContext) -> None:
+        """ Stores feedback to the feedback file"""
+        bot = context.bot
+        cmd = update.message.text.split(" ")
 
-    def clean_up(self, update: Update, context: CallbackContext) -> None:
+        chat_id = update.message.chat_id
+        title = update.message.chat.title
+        user = update.effective_user
+
+        if len(cmd) < 2:
+            bot.send_message(chat_id, "There should be some feedback!")
+            return
+        fed = ' '.join(cmd[1:])
+        if len(fed) < 4:
+            bot.send_message(chat_id, "We would appreciate if the feedback is at least 3 words long!")
+            return
+
+        fed_formated = f"Chat_id: {chat_id}\nTitle: {title}\nUser: {user.full_name}\n---\n{fed}\n\n\n"
+
+        with open("feedback.txt", "a") as file:
+            file.write(fed_formated)
+
+        bot.send_message(chat_id, "Thanks for the feedback we will take a look")
+
+    def clean_up(self, update: Update, context: CallbackContext, chat_id, game: Game_91) -> None:
         """
             Cleans up data releated to a specific game
         """
-        pass
+        player_list_key = f"player_{chat_id}_{game.id}"
+        del context.bot_data[player_list_key]
+        del context.dispatcher.chat_data[int(chat_id)][game.id]
+        context.bot_data[int(chat_id)].remove(game)
 
     def show_ins(self, update: Update, context: CallbackContext) -> None:
         """
@@ -321,6 +415,41 @@ class G91_tgingin:
         chat_id = update.message.chat_id
 
         bot.send_message(chat_id, ins_msg)
+
+    def show_stat(self, update: Update, context: CallbackContext) -> None:
+        """
+        shows the cards you have left and the cards you won
+        """
+
+        bot = context.bot
+        cmd = update.message.text.split(" ")
+        user = update.effective_user
+
+        if user.id not in context.bot_data:
+            bot.send_message(user['id'], "You arn't playing any game!")
+            return
+
+        stat_msg = "In {}"
+
+        if len(cmd) < 2:
+            msg = ""
+            for game_id, player in context.bot_data[user.id].items():
+                msg += stat_msg.format(game_id, player.get_cards(), player.get_wins())
+
+            bot.send_message(user['id'], msg)
+            return
+
+        game_id = cmd[1]
+        if game_id not in context.bot_data[user.id]:
+            bot.send_message(user['id'], f"You aren't playing a game with the id {game_id}")
+            return
+
+        player = context.bot_data[user.id][game_id]
+        msg = stat_msg.format(game_id, player.get_cards(), player.get_wins())
+        bot.send_message(user['id'], msg)
+
+        player = context.bot_data[user.id][game_id]
+
 
     def show_cmd(self, update: Update, context: CallbackContext) -> None:
         """
@@ -338,7 +467,7 @@ class G91_tgingin:
         to the command"""
 
         chat_type = update.message.chat.type
-        cmd = update.message.text.split(" ")[0]
+        cmd = update.message.text.split(" ")[0].upper()
 
         if cmd in self.cmd_map:
             if chat_type in self.cmd_map[cmd][0]:

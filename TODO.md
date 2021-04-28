@@ -12,15 +12,24 @@
     -   [x] githubactions
 -   [x] version 0.7 => give different suits for different players
 -   [x] Version 0.8 => Multi player mode both in different groups and in single groups
--   [ ] Version 0.9 => Error checking, edge case handling, more test, refactor test by modularizing, DRY
+-   [x] Version 0.9 => Error checking, edge case handling, more test, refactor test by modularizing, DRY
+
     -   [x] Modularize existing test (DRY)
-    -   [ ] More tests for other classes
-    -   [ ] Error checking and edge case handling
--   [ ] Version 0.98 => group score board for compitation(Telegram game bot)
+    -   [x] Usert manual tests
+    -   [x] Error checking and edge case handling
+
 -   [ ] Version 0.99 => Complete the README.md
--   [ ] Version 0.999 => Nice Congratulation message for the winner
--   [ ] Version 0.9999 => Add a feed back function (that combined with logs should be used for improvment)
+-   [x] Version 0.999 => Nice Congratulation message for the winner
+-   [x] Version 0.9999 => Add a feed back function (that combined with logs should be used for improvment)
+-   [x] version 0.99999 => Final refactoreing before version 1
 -   [ ] Version 1.0 => Final Clean up and tidying(Licenceing and proper creediting)
+
+    -   [x] Cleanup function to remove data after once it isn't needed
+    -   [ ] Licencing and proper creediting
+
 -   [ ] Version 1.0 => First release
--   [ ] Version 1.1 => Add test for all classes
+-   [ ] Version 1.1 => Add test for all classes, and latest funcionalties (round_post, final_posts, including images, st. function, private messages)
 -   [ ] version 1.1 => Add keyboard layout as a secondary option
+
+-   [ ] For other classes - [ ] For different Inputs - [ ] For new functions
+-   [ ] Version 0.98 => group score board for compitation(Telegram game bot)

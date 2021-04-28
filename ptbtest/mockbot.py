@@ -183,6 +183,9 @@ class Mockbot(TelegramObject):
             dat.pop('foursquare_id', '')
             dat.pop('address', '')
             dat.pop('game_short_name', '')
+            if 'animation' in dat:
+                dat.pop('animation', '')
+                dat.pop('caption', '')
             dat['document'] = dat.pop('document2', None)
             dat['audio'] = dat.pop('audio2', None)
             dat['voice'] = dat.pop('voice2', None)
@@ -217,6 +220,20 @@ class Mockbot(TelegramObject):
         if disable_web_page_preview:
             data['disable_web_page_preview'] = disable_web_page_preview
 
+        return data
+    def delete_message(self, chat_id, message_id):
+        return None
+    @message
+    def sendAnimation(self,
+                  chat_id,
+                  animation,
+                  caption=None,
+                  disable_notification=False,
+                  reply_to_message_id=None,
+                  reply_markup=None,
+                  timeout=None,
+                  **kwargs):
+        data = {'chat_id': chat_id, 'text': animation}
         return data
 
     @message
@@ -672,7 +689,7 @@ class Mockbot(TelegramObject):
                    timeout=None,
                    **kwargs):
         return None
- 
+
     def delete_webhook(self, timeout=None, **kwargs):
         return None
 
@@ -788,6 +805,7 @@ class Mockbot(TelegramObject):
 
     get_me = getMe
     send_message = sendMessage
+    send_animation = sendAnimation
     forward_message = forwardMessage
     send_photo = sendPhoto
     send_audio = sendAudio

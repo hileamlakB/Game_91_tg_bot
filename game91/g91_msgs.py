@@ -15,7 +15,7 @@ We now need some players to the start the game.
 
 In this game we at least need {} players, and at most {} players.
 
-Any one who wants to play can type !ADD <game id> (the game id \
+Any one who wants to play can type !JOIN <game id> (the game id \
 value instead of <game id>). They will then automatically be \
 added to the current Game.
 
@@ -75,7 +75,7 @@ init_msg = "The game is already started. Enjoy it!!"
 bid4_msg = "You are now bidding for the {} of {}"
 bid_msg = "Make your round {} bids!!"
 nstart_msg = "The game isn't ready to be started! Add more players"
-win_msg = "Congratulation {}! You won the game with {} points"
+win_msg = "Congratulation {}! You won the game with {} points {}"
 ins_msg = """
 Players and Cards
 **************************
@@ -141,25 +141,34 @@ you type `!CMD`.
 cmd_msg = """
 comands to interact with the bot
 ****************************
-=> `!CRT` - create command that creates a game session and sends the game id
+=> `.C` or `!CRT` - create command that creates a game session and sends the game id
 
-=> `!ADD <game id>` - adds the player who types the command to the game \
-session identified by the game id. The game id can be seen from the \
-the CRT command response
+=> `.J <game id>` or `!JOIN <game id>` - adds the player who types the command to the game \
+identified by the game id. The game id can be seen from the \
+the creat command command response
 
-=> `!STR <game id>` - start command, that tells the bot that all \
+=> `.S <game id>`  or `!STR <game id>` - start command, that tells the bot that all \
 players have been added and hence it should start the game.
 
-=> `!BID <game id>` - Command used to bid for a card in private message
+=> `.B <value> <game id>` or `!BID <value> <game id>` - Command used to bid for a card in private message \
+    <value> - is that ammount you want to bid, game id is the id of that game you are playing
 
-=> `!INS` - gives the instruction of the game and how to play it
+=> `.I` or `!INS` - gives the instruction of the game and how to play it
 
-=> `!CMD` - Gives this list of commands and their functinoality
+=> `.M` or `!CMD` - Gives this list of commands and their functinoality
+
+=> `.F Feedback` or `!FED  Feedback` -  Sends feedback to the developers, it can be in private, or group chats
+     eg: 1. !FED "When I typed !BID it gave the wrong result"
+         2. !FED "I really like this game but this this could be improved"
+         3. !FED "I don't like the user experience it could be improved by"
+
+=> `.ST <game id>` or `!STAT game id` - shows status in the private chat, you can see the cards you won and the cards you have left in the <game id> game with this command
+if no game id is provided it will show all your status across all the mutliple games you are participating in
 """
 tie_msg = """
 There was a tie in this round no one won this  time.
 The prize will go the next round and will be agrigated with the next \
-\round's prize
+round's prize
 """
 xplay_msg = "You aren't playing any game! Go to your favorite group and \
 create one"
@@ -168,5 +177,30 @@ nid_msg = "Please specify to which game you want to bid with the game id \
 you got during the creation!!"
 xconb_msg = "You can't bid now! wait till this round is over!"
 xcard_msg = "You can't bid with that card you don't have it!"
-bids_msg = "Your bid has been recorded!!"
+bids_msg = "Your bid has been recorded!! Go back to {}"
 xug_msg = "You are not a part of this game!!"
+urc_msg = "Here are your current cards!!\n"
+test_msg = """Hello!! I am gald you are playing me!!
+In this Private chat you will tell me your bids!! And I will keep them \
+a secreat until the time comes!!.
+For a start you have the following cards\n
+{} for the game {}.
+
+We will start shortly when everyone has initialized a conversation
+with me.\n\n
+To see the cards you have and the cards you won
+you can type the .St <game id> here at any time.
+
+And remeber when you bid a card you loose it, so you won't be able to bid\
+with it again"""
+bidh_msg = "\nTo bid you can do .B <value> <game_id>"
+stat_msg="""
+In {}
+-------------
+Left: {}
+
+Wons: {}
+
+---------------
+
+"""

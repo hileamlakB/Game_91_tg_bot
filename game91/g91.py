@@ -27,7 +27,7 @@ class Game_91(CardGame):
                      respectice values of each card
     """
 
-    ID_LENGTH = 4
+    ID_LENGTH = 3
     MAX_PLAYERS = 7
     MIN_PLAYERS = 2
     CARD_VALUES_MAP = {**{x: x for x in range(2, 11)},
@@ -197,11 +197,12 @@ class Game_91(CardGame):
 
         The format of the returned string is as follows
         "
+        Here are round <round> bids
           {player1_name} bid {bid_value}
           {player2_name} bid {bid_value}
         "
         """
-        bid_str = ""
+        bid_str = f"Here are round {self.round} bids\n"
         for bid in self.bids[f"{self.round}"]:
             for player, value in bid.items():
                 bid_str += f"{player.name} bid {value}\n"
@@ -227,8 +228,12 @@ class Game_91(CardGame):
         # choose the maximum bid of this round
         for bid in self.bids[f"{self.round}"]:
             player, value = list(bid.items())[0]
-            value = Game_91.CARD_VALUES_MAP[value]
-            if value > max_bid[1]:
+            mapped_value = Game_91.CARD_VALUES_MAP[value]
+
+            if not max_bid[1]:
+                max_bid = [player, value]
+                continue
+            if mapped_value > Game_91.CARD_VALUES_MAP[max_bid[1]]:
                 max_bid = [player, value]
 
         # check if there is tie by counting the number of maximum bids
@@ -236,6 +241,7 @@ class Game_91(CardGame):
         for bid in self.bids[f"{self.round}"]:
             all_bids += [value for _, value in bid.items()]
         # check if there is a repeated maximum
+
         if all_bids.count(max_bid[1]) != 1:
             max_bid = [None, 0]
 
@@ -279,3 +285,13 @@ class Game_91(CardGame):
         for card in self.current_prize:
             prize += f"-> The {card[1]} of {card[0]} is up for a bid\n"
         return prize
+
+    def get_c_prize(self) -> str:
+        """Returns the current prizes as a string"""
+
+        emoji_map = Cards.SUIT_MAP
+        card_str = ""
+        for card in self.current_prize:
+            suit, value = card
+            card_str += str(value) + emoji_map[suit] + " "
+        return card_str
