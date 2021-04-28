@@ -652,7 +652,8 @@ class Test_BID(CommonInit):
                 response = self.send(
                     cmd=f"!BID {bid_card} {game_id}", user=user)
 
-        response = ' '.join([m['text'] for m in self.bot.sent_messages[:-6] if 'text' in m])
+        response = ' '.join([m['text']
+                            for m in self.bot.sent_messages[:-6] if 'text' in m])
         self.assertRegex(
             response,
             "(No one won!! There was a tie)|(Congratulation)")

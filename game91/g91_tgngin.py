@@ -64,7 +64,6 @@ class G91_tgingin:
         self.current_option += 1
         return Cards.SUIT_OPTIONS[current]
 
-
     def req_bid(self, bot, group_id, game):
         """
         Sends a bid request including images to private and group messages
@@ -77,19 +76,21 @@ class G91_tgingin:
                 bot.send_photo(group_id, photo=im.read(),
                                caption=f"The {prize[1]} of {prize[0]} \
 is up for a bid")
-        bot.send_message(group_id, bid_msg.format(game.round) + "Here @game_91_bot")
-
-
+        bot.send_message(
+            group_id,
+            bid_msg.format(
+                game.round) +
+            "Here @game_91_bot")
 
         for player in game.get_players():
             pid = player.user['id']
-            cbid_msg = bid_msg.format(game.round) + "For " + game.get_c_prize() + "in " + game.id
+            cbid_msg = bid_msg.format(
+                game.round) + "For " + game.get_c_prize() + "in " + game.id
             bot.send_message(pid, cbid_msg)
 
             cards = player.get_cards()
             if cards:
                 bot.send_message(pid, urc_msg + cards + bidh_msg)
-
 
     def test_init(self, bot, game):
         """
@@ -101,7 +102,9 @@ is up for a bid")
         for player in game.get_players():
             try:
                 pid = player.user['id']
-                bot.send_message(pid, test_msg.format(player.get_cards(), game.id))
+                bot.send_message(
+                    pid, test_msg.format(
+                        player.get_cards(), game.id))
 
             except Unauthorized:
                 uusers.append(player.user['first_name'])
@@ -142,7 +145,6 @@ is up for a bid")
             bot.send_message(user_id, xcard_msg)
             return False
 
-
         bot.send_message(user_id, bids_msg.format(game.g_link))
         return True
 
@@ -164,14 +166,18 @@ is up for a bid")
         """
         winner = game.handle_winner()
         if winner[0] is not None:
-            msg = bot.send_message(group_id, f"{winner[0].name} won this round")
+            msg = bot.send_message(
+                group_id, f"{winner[0].name} won this round")
             self.forward(bot, game.get_players(), msg, group_id)
 
-
-            msg = bot.send_message(group_id, f"Congratulation my friend {winner[0].name}")
+            msg = bot.send_message(
+                group_id, f"Congratulation my friend {winner[0].name}")
             bot.forward_message(winner[0].user.id, group_id, msg.message_id)
             try:
-                bot.send_animation(winner[0].user.id, animation=get_anim_url(), caption="Powered By Tenor")
+                bot.send_animation(
+                    winner[0].user.id,
+                    animation=get_anim_url(),
+                    caption="Powered By Tenor")
             except Exception as e:
                 print(e)
             return
@@ -179,22 +185,31 @@ is up for a bid")
         msg = bot.send_message(group_id, tie_msg)
         self.forward(bot, game.get_players(), msg, group_id)
 
-
     def post_final(self, bot, group_id, game):
         """Post the fnial message one the game is over"""
         f_winner = game.final_winner()
         if len(f_winner) == 1:
             msg = bot.send_message(group_id,
-                             win_msg.format(f_winner[0].name,
-                                            f_winner[0].total_points,
-                                            f_winner[0].get_wins()))
+                                   win_msg.format(f_winner[0].name,
+                                                  f_winner[0].total_points,
+                                                  f_winner[0].get_wins()))
 
-            bot.send_message(group_id, f"🎊🎊🎊🎊🎊🎊🎊🎊🎊HERRAY!!🎊🎊🎊🎊🎊🎊🎊\nwe love {f_winner[0].name}")
-            bot.send_message(f_winner[0].user.id, f"🎊🎊🎊🎊🎊🎊🎊🎊🎊HERRAY!!🎊🎊🎊🎊🎊🎊🎊\nwe love {f_winner[0].name}")
+            bot.send_message(
+                group_id,
+                f"🎊🎊🎊🎊🎊🎊🎊🎊🎊HERRAY!!🎊🎊🎊🎊🎊🎊🎊\nwe love {f_winner[0].name}")
+            bot.send_message(
+                f_winner[0].user.id,
+                f"🎊🎊🎊🎊🎊🎊🎊🎊🎊HERRAY!!🎊🎊🎊🎊🎊🎊🎊\nwe love {f_winner[0].name}")
 
             try:
-                bot.send_animation(group_id, animation = get_anim_url(), caption="Powered By Tenor")
-                bot.send_animation(f_winner[0].user.id, animation = get_anim_url(), caption="Powered By Tenor")
+                bot.send_animation(
+                    group_id,
+                    animation=get_anim_url(),
+                    caption="Powered By Tenor")
+                bot.send_animation(
+                    f_winner[0].user.id,
+                    animation=get_anim_url(),
+                    caption="Powered By Tenor")
             except Exception as e:
                 print(e)
 
@@ -353,14 +368,15 @@ is up for a bid")
         if curent_game.is_round_complete():
 
             if curent_game.previous_bid:
-                bot.delete_message(group_id, curent_game.previous_bid.message_id)
+                bot.delete_message(
+                    group_id, curent_game.previous_bid.message_id)
                 for p in curent_game.get_players():
-                    bot.delete_message(p.user.id,  p.previous_bid.message_id)
-
+                    bot.delete_message(p.user.id, p.previous_bid.message_id)
 
             msg = bot.send_message(group_id, f"{curent_game.get_bids()}")
             for p in curent_game.get_players():
-                p.previous_bid = bot.forward_message(p.user.id, group_id, msg.message_id)
+                p.previous_bid = bot.forward_message(
+                    p.user.id, group_id, msg.message_id)
 
             curent_game.previous_bid = msg
             # post round results in the end
@@ -388,7 +404,9 @@ is up for a bid")
             return
         fed = ' '.join(cmd[1:])
         if len(fed) < 4:
-            bot.send_message(chat_id, "We would appreciate if the feedback is at least 3 words long!")
+            bot.send_message(
+                chat_id,
+                "We would appreciate if the feedback is at least 3 words long!")
             return
 
         fed_formated = f"Chat_id: {chat_id}\nTitle: {title}\nUser: {user.full_name}\n---\n{fed}\n\n\n"
@@ -396,9 +414,16 @@ is up for a bid")
         with open("feedback.txt", "a") as file:
             file.write(fed_formated)
 
-        bot.send_message(chat_id, "Thanks for the feedback we will take a look")
+        bot.send_message(
+            chat_id,
+            "Thanks for the feedback we will take a look")
 
-    def clean_up(self, update: Update, context: CallbackContext, chat_id, game: Game_91) -> None:
+    def clean_up(
+            self,
+            update: Update,
+            context: CallbackContext,
+            chat_id,
+            game: Game_91) -> None:
         """
             Cleans up data releated to a specific game
         """
@@ -434,14 +459,18 @@ is up for a bid")
         if len(cmd) < 2:
             msg = ""
             for game_id, player in context.bot_data[user.id].items():
-                msg += stat_msg.format(game_id, player.get_cards(), player.get_wins())
+                msg += stat_msg.format(game_id,
+                                       player.get_cards(),
+                                       player.get_wins())
 
             bot.send_message(user['id'], msg)
             return
 
         game_id = cmd[1]
         if game_id not in context.bot_data[user.id]:
-            bot.send_message(user['id'], f"You aren't playing a game with the id {game_id}")
+            bot.send_message(
+                user['id'],
+                f"You aren't playing a game with the id {game_id}")
             return
 
         player = context.bot_data[user.id][game_id]
@@ -449,7 +478,6 @@ is up for a bid")
         bot.send_message(user['id'], msg)
 
         player = context.bot_data[user.id][game_id]
-
 
     def show_cmd(self, update: Update, context: CallbackContext) -> None:
         """

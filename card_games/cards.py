@@ -13,7 +13,7 @@ class Cards:
 
     CARD_VALUES = list(range(2, 11)) + ['A', 'J', 'Q', 'K']
     SUIT_OPTIONS = ["CLUB", "DIAMOND", "SPADE", "HEART"]
-    SUIT_MAP = {"CLUB":"♣️", "DIAMOND": "♦", "SPADE": "♠", "HEART":"♥"}
+    SUIT_MAP = {"CLUB": "♣️", "DIAMOND": "♦", "SPADE": "♠", "HEART": "♥"}
 
     def __init__(self, *args, **kwargs):
         """intializes a cards object

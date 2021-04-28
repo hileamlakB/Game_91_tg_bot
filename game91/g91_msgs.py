@@ -194,7 +194,7 @@ you can type the .St <game id> here at any time.
 And remeber when you bid a card you loose it, so you won't be able to bid\
 with it again"""
 bidh_msg = "\nTo bid you can do .B <value> <game_id>"
-stat_msg="""
+stat_msg = """
 In {}
 -------------
 Left: {}

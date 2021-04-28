@@ -101,7 +101,7 @@ class Player:
 
         emoji_map = Cards.SUIT_MAP
 
-        cards =  self.cards.get_cards()
+        cards = self.cards.get_cards()
         card_str = ""
         for card in cards:
             suit, value = card
@@ -114,7 +114,6 @@ class Player:
         as one long string"""
 
         emoji_map = Cards.SUIT_MAP
-
 
         card_str = ""
         for card in self.won:

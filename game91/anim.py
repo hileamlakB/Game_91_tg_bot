@@ -29,6 +29,7 @@ url_lst = [
     "https://media1.tenor.com/images/b6d83d66859b0cf095ef81120ef98e1f/tenor.gif",
 ]
 
+
 def get_anim_url():
     global url_lst
     import random
