@@ -18,7 +18,7 @@
     -   [x] Usert manual tests
     -   [x] Error checking and edge case handling
 
--   [ ] Version 0.99 => Complete the README.md
+-   [x] Version 0.99 => Complete the README.md
 -   [x] Version 0.999 => Nice Congratulation message for the winner
 -   [x] Version 0.9999 => Add a feed back function (that combined with logs should be used for improvment)
 -   [x] version 0.99999 => Final refactoreing before version 1
