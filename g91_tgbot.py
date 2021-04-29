@@ -4,6 +4,7 @@ This script will start the telegram bot
 that facilitates the game play of game-91
 """
 import logging
+import os
 
 from game91.g91_tgngin import G91_tgingin
 from game91.tg_basic import help_command, start
@@ -13,9 +14,10 @@ from telegram.ext import CommandHandler, Filters, MessageHandler, Updater
 log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 logging.basicConfig(format=log_format,
                     level=logging.INFO,
-                    filename="tg_bot.log",
-                    encoding='utf-8')
-
+                    filename="tg_bot.log")
+# set up a listening port
+PORT = int(os.environ.get('PORT', 5000))
+TOKEN = "1622385036:AAHWRqkTwjUyFRvq8zb1iL7h3_uxqgedDeU"
 
 def main() -> None:
     """Call this method to the start the bot."""
@@ -24,7 +26,7 @@ def main() -> None:
     g_engine = G91_tgingin()
 
     # Create the Updater and pass it your bot's token.
-    updater = Updater("1622385036:AAHWRqkTwjUyFRvq8zb1iL7h3_uxqgedDeU",
+    updater = Updater(TOEKN,
                       use_context=True)
 
     dispatcher = updater.dispatcher
@@ -34,7 +36,11 @@ def main() -> None:
         MessageHandler(Filters.text & ~Filters.command, g_engine.engine))
 
     # Start the Bot
-    updater.start_polling()
+    #updater.start_polling()
+    updater.start_webhook(listen="0.0.0.0",
+                          port=int(PORT),
+                          url_path=TOKEN)
+    updater.bot.setWebhook('https://yourherokuappname.herokuapp.com/' + TOKEN)
 
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
