@@ -17,7 +17,7 @@ logging.basicConfig(format=log_format,
                     filename="tg_bot.log")
 # set up a listening port
 PORT = int(os.environ.get('PORT', 5000))
-TOKEN = "1622385036:AAHWRqkTwjUyFRvq8zb1iL7h3_uxqgedDeU"
+TOKEN = ""
 
 
 def main() -> None:
