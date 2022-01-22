@@ -62,7 +62,7 @@ For more infor about the commands type !CMD
 """
 xuser_msg = "For the bot to be able to receive your bid you have \
 to initialize a conversation with it. You can do that by going \
-to @game_91_bot and pressing start. After that you can retype \
+to @ehm_game_bot and pressing start. After that you can retype \
 the !STR command"
 started_msg = "The game is now started no more players can be added!\
 you can now play. Type !INS anytime to see instructions."

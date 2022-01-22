@@ -80,7 +80,7 @@ is up for a bid")
             group_id,
             bid_msg.format(
                 game.round) +
-            "Here @game_91_bot")
+            "Here @ehm_game_91_bot")
 
         for player in game.get_players():
             pid = player.user['id']
